@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
-@WebServlet("/skill")
+@WebServlet("/skill/*")
 public class SkillServlet extends HttpServlet {
 
     private final BaseRepository<Long, Skill> repository;

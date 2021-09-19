@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
-@WebServlet("/company")
+@WebServlet("/company/*")
 public class CompanyServlet extends HttpServlet {
 
     private final BaseRepository<Long,Company> repository;

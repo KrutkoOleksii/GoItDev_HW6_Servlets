@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
-@WebServlet("/project")
+@WebServlet("/project/*")
 public class ProjectServlet extends HttpServlet {
 
     private final BaseRepository<Long, Project> repository;
