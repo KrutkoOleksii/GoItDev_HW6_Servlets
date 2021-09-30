@@ -6,6 +6,7 @@ import ua.goit.model.Skill;
 import ua.goit.repository.BaseRepository;
 import ua.goit.repository.Factory;
 
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -25,10 +26,12 @@ public class SkillServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         String pathInfo = req.getPathInfo();
         if (pathInfo==null || "/".equals(pathInfo)) {
-            sendAsJson(resp, repository.findAll());
+            //sendAsJson(resp, repository.findAll());
+            req.setAttribute("skills",repository.findAll());
+            req.getRequestDispatcher("/view/skills.jsp").forward(req,resp);
             return;
         }
         String[] split = pathInfo.split("/");

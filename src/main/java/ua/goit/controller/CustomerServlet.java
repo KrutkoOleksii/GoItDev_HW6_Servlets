@@ -5,6 +5,7 @@ import ua.goit.model.Customer;
 import ua.goit.repository.BaseRepository;
 import ua.goit.repository.Factory;
 
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -24,10 +25,12 @@ public class CustomerServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         String pathInfo = req.getPathInfo();
         if (pathInfo==null || "/".equals(pathInfo)) {
-            sendAsJson(resp, repository.findAll());
+            //sendAsJson(resp, repository.findAll());
+            req.setAttribute("customers",repository.findAll());
+            req.getRequestDispatcher("/view/customers.jsp").forward(req,resp);
             return;
         }
         String[] split = pathInfo.split("/");

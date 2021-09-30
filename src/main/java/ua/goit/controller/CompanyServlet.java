@@ -5,12 +5,14 @@ import ua.goit.model.Company;
 import ua.goit.repository.BaseRepository;
 import ua.goit.repository.Factory;
 
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @WebServlet("/company/*")
@@ -24,10 +26,12 @@ public class CompanyServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         String pathInfo = req.getPathInfo();
         if (pathInfo==null || "/".equals(pathInfo)) {
-            sendAsJson(resp, repository.findAll());
+            //sendAsJson(resp, repository.findAll());
+            req.setAttribute("companies",repository.findAll());
+            req.getRequestDispatcher("/view/companies.jsp").forward(req,resp);
             return;
         }
         String[] split = pathInfo.split("/");
@@ -39,14 +43,15 @@ public class CompanyServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String payload = req.getReader().lines().collect(Collectors.joining("\n"));
-        Company company = gson.fromJson(payload, Company.class);
-        sendAsJson(resp, repository.save(company));
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+//        String payload = req.getReader().lines().collect(Collectors.joining("\n"));
+//        Company company = gson.fromJson(payload, Company.class);
+        req.getRequestDispatcher("/view/addCompany.jsp").forward(req,resp);
+//        sendAsJson(resp, repository.save(company));
     }
 
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         String payload = req.getReader().lines().collect(Collectors.joining("\n"));
         Company company = gson.fromJson(payload, Company.class);
         sendAsJson(resp, repository.save(company));
