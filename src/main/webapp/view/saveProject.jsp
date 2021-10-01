@@ -10,7 +10,7 @@
         <form name="projectForm" method="post" action="projects">
             Name: <input type="text" name="name"/> <br/>
             Cost: <input type="numeric" name="cost"/> <br/>
-            Start date: <input type="text" name="startDate"/> <br/>
+            Start date: <input type="date" name="startDate" pattern = "yyyy-MM-dd"/> <br/>
             Company ID: <input type="numeric" name="companyId"/> <br/>
             Customer ID: <input type="numeric" name="customerId"/> <br/>
 

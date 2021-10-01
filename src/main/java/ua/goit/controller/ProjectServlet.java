@@ -54,10 +54,10 @@ public class ProjectServlet extends HttpServlet {
 //        sendAsJson(resp, repository.save(project));
         Project project = Project.builder()
                 .name(req.getParameter("name"))
-                .cost(Integer.parseInt(req.getParameter("code")))
-                .startDate(req.getParameter("code"))
-                .companyId(Long.parseLong(req.getParameter("code")))
-                .customerId(Long.parseLong(req.getParameter("code")))
+                .cost(Integer.parseInt(req.getParameter("cost")))
+                .startDate(req.getParameter("startDate"))
+                .companyId(Long.parseLong(req.getParameter("companyId")))
+                .customerId(Long.parseLong(req.getParameter("customerId")))
                 .build();
         repository.save(project);
         req.getRequestDispatcher("/index.html").forward(req,resp);
