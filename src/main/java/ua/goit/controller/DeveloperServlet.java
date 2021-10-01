@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @WebServlet("/developer/*")
@@ -38,14 +40,24 @@ public class DeveloperServlet extends HttpServlet {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
-        sendAsJson(resp, repository.findById(Long.parseLong(split[1])));
+        //sendAsJson(resp, repository.findById(Long.parseLong(split[1])));
+        List<Developer> developers = new ArrayList<>();
+        developers.add(repository.findById(Long.parseLong(split[1])).get());
+        req.setAttribute("developers", developers);
+        req.getRequestDispatcher("/view/developers.jsp").forward(req,resp);
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String payload = req.getReader().lines().collect(Collectors.joining("\n"));
-        Developer developer = gson.fromJson(payload, Developer.class);
-        sendAsJson(resp, repository.save(developer));
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+        Developer developer = Developer.builder()
+                .name(req.getParameter("name"))
+                .age(Integer.parseInt(req.getParameter("age")))
+                .gender(req.getParameter("gender"))
+                .salary(Integer.parseInt(req.getParameter("salary")))
+                .companyId(Long.parseLong(req.getParameter("companyId")))
+                .build();
+        repository.save(developer);
+        req.getRequestDispatcher("/index.html").forward(req,resp);
     }
 
     @Override

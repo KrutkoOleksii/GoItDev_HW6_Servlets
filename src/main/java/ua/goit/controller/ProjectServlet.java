@@ -1,7 +1,6 @@
 package ua.goit.controller;
 
 import com.google.gson.Gson;
-import ua.goit.model.Company;
 import ua.goit.model.Project;
 import ua.goit.repository.BaseRepository;
 import ua.goit.repository.Factory;
@@ -13,6 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @WebServlet("/project/*")
@@ -39,14 +40,27 @@ public class ProjectServlet extends HttpServlet {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
-        sendAsJson(resp, repository.findById(Long.parseLong(split[1])));
+        //sendAsJson(resp, repository.findById(Long.parseLong(split[1])));
+        List<Project> projects = new ArrayList<>();
+        projects.add(repository.findById(Long.parseLong(split[1])).get());
+        req.setAttribute("projects", projects);
+        req.getRequestDispatcher("/view/projects.jsp").forward(req,resp);
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String payload = req.getReader().lines().collect(Collectors.joining("\n"));
-        Project project = gson.fromJson(payload, Project.class);
-        sendAsJson(resp, repository.save(project));
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+//        String payload = req.getReader().lines().collect(Collectors.joining("\n"));
+//        Project project = gson.fromJson(payload, Project.class);
+//        sendAsJson(resp, repository.save(project));
+        Project project = Project.builder()
+                .name(req.getParameter("name"))
+                .cost(Integer.parseInt(req.getParameter("code")))
+                .startDate(req.getParameter("code"))
+                .companyId(Long.parseLong(req.getParameter("code")))
+                .customerId(Long.parseLong(req.getParameter("code")))
+                .build();
+        repository.save(project);
+        req.getRequestDispatcher("/index.html").forward(req,resp);
     }
 
     @Override

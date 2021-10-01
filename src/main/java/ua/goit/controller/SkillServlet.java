@@ -1,7 +1,6 @@
 package ua.goit.controller;
 
 import com.google.gson.Gson;
-import ua.goit.model.Company;
 import ua.goit.model.Skill;
 import ua.goit.repository.BaseRepository;
 import ua.goit.repository.Factory;
@@ -13,6 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @WebServlet("/skill/*")
@@ -39,14 +40,24 @@ public class SkillServlet extends HttpServlet {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
-        sendAsJson(resp, repository.findById(Long.parseLong(split[1])));
+        //sendAsJson(resp, repository.findById(Long.parseLong(split[1])));
+        List<Skill> skills = new ArrayList<>();
+        skills.add(repository.findById(Long.parseLong(split[1])).get());
+        req.setAttribute("skills", skills);
+        req.getRequestDispatcher("/view/skills.jsp").forward(req,resp);
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String payload = req.getReader().lines().collect(Collectors.joining("\n"));
-        Skill skill = gson.fromJson(payload, Skill.class);
-        sendAsJson(resp, repository.save(skill));
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+//        String payload = req.getReader().lines().collect(Collectors.joining("\n"));
+//        Skill skill = gson.fromJson(payload, Skill.class);
+//        sendAsJson(resp, repository.save(skill));
+        Skill skill = Skill.builder()
+                .name(req.getParameter("name"))
+                .skillLevel(req.getParameter("level"))
+                .build();
+        repository.save(skill);
+        req.getRequestDispatcher("/index.html").forward(req,resp);
     }
 
     @Override

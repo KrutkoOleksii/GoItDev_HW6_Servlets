@@ -5,7 +5,7 @@
         <title>Companies</title>
     </head>
     <body>
-        <head>Companies</head>
+        <h2>Companies</h2>
         <p>
         <table border=1 wide=100>
         <tr>
@@ -22,5 +22,6 @@
         </c:forEach>
         </table>
         </p>
+        <button onclick="location.href='/pm'">Back to main page</button>
     </body>
 </html>

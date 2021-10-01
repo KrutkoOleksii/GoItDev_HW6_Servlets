@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,7 +30,6 @@ public class CompanyServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         String pathInfo = req.getPathInfo();
         if (pathInfo==null || "/".equals(pathInfo)) {
-            //sendAsJson(resp, repository.findAll());
             req.setAttribute("companies",repository.findAll());
             req.getRequestDispatcher("/view/companies.jsp").forward(req,resp);
             return;
@@ -39,15 +39,21 @@ public class CompanyServlet extends HttpServlet {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
-        sendAsJson(resp, repository.findById(Long.parseLong(split[1])));
+        //sendAsJson(resp, repository.findById(Long.parseLong(split[1])));
+        List<Company> companies = new ArrayList<>();
+        companies.add(repository.findById(Long.parseLong(split[1])).get());
+        req.setAttribute("companies", companies);
+        req.getRequestDispatcher("/view/companies.jsp").forward(req,resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-//        String payload = req.getReader().lines().collect(Collectors.joining("\n"));
-//        Company company = gson.fromJson(payload, Company.class);
-        req.getRequestDispatcher("/view/addCompany.jsp").forward(req,resp);
-//        sendAsJson(resp, repository.save(company));
+        Company company = Company.builder()
+                .name(req.getParameter("name"))
+                .code(req.getParameter("code"))
+                .build();
+        repository.save(company);
+        req.getRequestDispatcher("/index.html").forward(req,resp);
     }
 
     @Override

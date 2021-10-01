@@ -5,7 +5,7 @@
         <title>Developers</title>
     </head>
     <body>
-        <head>Developers</head>
+        <h2>Developers</h2>
         <p>
         <table border=1 wide=100>
         <tr>
@@ -28,5 +28,6 @@
         </c:forEach>
         </table>
         </p>
+        <button onclick="location.href='/pm'">Back to main page</button>
     </body>
 </html>
