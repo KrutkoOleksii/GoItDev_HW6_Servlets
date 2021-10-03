@@ -7,7 +7,7 @@
     <body>
         <h2>Company parameters:</h2>
         <p>
-        <form name="companyForm" method="post" action="companies">
+        <form name="companyForm" method="post" action="create">
             Name: <input type="text" name="name"/> <br/>
             Code: <input type="text" name="code"/> <br/>
 

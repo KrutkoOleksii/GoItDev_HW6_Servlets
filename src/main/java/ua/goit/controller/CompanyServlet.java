@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @WebServlet("/company/*")
 public class CompanyServlet extends HttpServlet {
@@ -28,6 +27,7 @@ public class CompanyServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+        String action = getAction(req);
         String pathInfo = req.getPathInfo();
         if (pathInfo==null || "/".equals(pathInfo)) {
             req.setAttribute("companies",repository.findAll());
@@ -39,7 +39,6 @@ public class CompanyServlet extends HttpServlet {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
-        //sendAsJson(resp, repository.findById(Long.parseLong(split[1])));
         List<Company> companies = new ArrayList<>();
         companies.add(repository.findById(Long.parseLong(split[1])).get());
         req.setAttribute("companies", companies);
@@ -48,19 +47,30 @@ public class CompanyServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+        String action = getAction(req);
+        if (action.startsWith("/create")) {
+            Company company = Company.builder()
+                    .name(req.getParameter("name"))
+                    .code(req.getParameter("code"))
+                    .build();
+            repository.save(company);
+            req.getRequestDispatcher("/index.html").forward(req, resp);
+        }
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+//        String payload = req.getReader().lines().collect(Collectors.joining("\n"));
+//        Company company = gson.fromJson(payload, Company.class);
+//        sendAsJson(resp, repository.save(company));
+        //req.setAttribute("companyId",1L);
         Company company = Company.builder()
                 .name(req.getParameter("name"))
                 .code(req.getParameter("code"))
                 .build();
         repository.save(company);
         req.getRequestDispatcher("/index.html").forward(req,resp);
-    }
 
-    @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-        String payload = req.getReader().lines().collect(Collectors.joining("\n"));
-        Company company = gson.fromJson(payload, Company.class);
-        sendAsJson(resp, repository.save(company));
     }
 
     @Override
@@ -75,6 +85,12 @@ public class CompanyServlet extends HttpServlet {
         String result = gson.toJson(payload);
         writer.print(result );
         writer.flush();
+    }
+
+    private String getAction(HttpServletRequest req) {
+        String requestURI = req.getRequestURI();
+        String requestPathWithServletPath = req.getContextPath() + req.getServletPath();
+        return requestURI.substring(requestPathWithServletPath.length());
     }
 
 }

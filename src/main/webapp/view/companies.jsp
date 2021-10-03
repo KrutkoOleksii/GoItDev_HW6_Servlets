@@ -7,7 +7,7 @@
     <body>
         <h2>Companies</h2>
         <p>
-        <table border=1 wide=100>
+        <table border=1 cellpadding=8>
         <tr>
              <th>id</th>
              <th>Name</th>
@@ -18,6 +18,7 @@
                   <td><c:out value="${company.id}"/></td>
                   <td><c:out value="${company.name}"/></td>
                   <td><c:out value="${company.code}"/></td>
+                  <td><button onclick="location.href='/pm/company/${company.id}'"/>UPDATE</button></td>
              </tr>
         </c:forEach>
         </table>

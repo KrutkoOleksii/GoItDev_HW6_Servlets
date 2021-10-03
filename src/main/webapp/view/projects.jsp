@@ -7,7 +7,7 @@
     <body>
         <h2>Projects</h2>
         <p>
-        <table border=1 wide=100>
+        <table border=1 cellpadding=8>
         <tr>
              <th>id</th>
              <th>Name</th>
