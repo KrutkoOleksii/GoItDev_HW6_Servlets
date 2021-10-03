@@ -31,7 +31,7 @@ public class CompanyServlet extends HttpServlet {
         String pathInfo = req.getPathInfo();
         if (pathInfo==null || "/".equals(pathInfo)) {
             req.setAttribute("companies",repository.findAll());
-            req.getRequestDispatcher("/view/companies.jsp").forward(req,resp);
+            req.getRequestDispatcher("/view/company/companies.jsp").forward(req,resp);
             return;
         }
         String[] split = pathInfo.split("/");
@@ -42,7 +42,7 @@ public class CompanyServlet extends HttpServlet {
         List<Company> companies = new ArrayList<>();
         companies.add(repository.findById(Long.parseLong(split[1])).get());
         req.setAttribute("companies", companies);
-        req.getRequestDispatcher("/view/companies.jsp").forward(req,resp);
+        req.getRequestDispatcher("/view/company/companies.jsp").forward(req,resp);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class CompanyServlet extends HttpServlet {
                     .code(req.getParameter("code"))
                     .build();
             repository.save(company);
-            req.getRequestDispatcher("/index.html").forward(req, resp);
+            req.getRequestDispatcher("/index.jsp").forward(req, resp);
         }
     }
 
@@ -69,7 +69,7 @@ public class CompanyServlet extends HttpServlet {
                 .code(req.getParameter("code"))
                 .build();
         repository.save(company);
-        req.getRequestDispatcher("/index.html").forward(req,resp);
+        req.getRequestDispatcher("/view/index.jsp").forward(req,resp);
 
     }
 

@@ -3,8 +3,12 @@
 <html>
     <head>
         <title>Customers</title>
+        <style>
+            <%@include file="/style.css" %>
+        </style>
     </head>
     <body>
+    <c:import url="/navibar.jsp"/>
         <h2>Customers</h2>
         <p>
         <table border=1 cellpadding=8>
@@ -22,6 +26,5 @@
         </c:forEach>
         </table>
         </p>
-        <button onclick="location.href='/pm'">Back to main page</button>
     </body>
 </html>

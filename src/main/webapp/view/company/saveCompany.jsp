@@ -3,8 +3,12 @@
 <html>
     <head>
         <title>Add Company</title>
+        <style>
+            <%@include file="/style.css" %>
+        </style>
     </head>
     <body>
+    <c:import url="/navibar.jsp"/>
         <h2>Company parameters:</h2>
         <p>
         <form name="companyForm" method="post" action="create">

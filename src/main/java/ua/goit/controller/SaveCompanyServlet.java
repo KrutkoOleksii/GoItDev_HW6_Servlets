@@ -12,7 +12,7 @@ public class SaveCompanyServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-        req.getRequestDispatcher("/view/saveCompany.jsp").forward(req,resp);
+        req.getRequestDispatcher("/view/company/saveCompany.jsp").forward(req,resp);
     }
 
 }

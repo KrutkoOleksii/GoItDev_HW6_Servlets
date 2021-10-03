@@ -32,7 +32,7 @@ public class CustomerServlet extends HttpServlet {
         if (pathInfo==null || "/".equals(pathInfo)) {
             //sendAsJson(resp, repository.findAll());
             req.setAttribute("customers",repository.findAll());
-            req.getRequestDispatcher("/view/customers.jsp").forward(req,resp);
+            req.getRequestDispatcher("/view/customer/customers.jsp").forward(req,resp);
             return;
         }
         String[] split = pathInfo.split("/");
@@ -44,7 +44,7 @@ public class CustomerServlet extends HttpServlet {
         List<Customer> customers = new ArrayList<>();
         customers.add(repository.findById(Long.parseLong(split[1])).get());
         req.setAttribute("customers", customers);
-        req.getRequestDispatcher("/view/customers.jsp").forward(req,resp);
+        req.getRequestDispatcher("/view/customer/customers.jsp").forward(req,resp);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class CustomerServlet extends HttpServlet {
                 .code(req.getParameter("code"))
                 .build();
         repository.save(customer);
-        req.getRequestDispatcher("/index.html").forward(req,resp);
+        req.getRequestDispatcher("/index.jsp").forward(req,resp);
     }
 
     @Override

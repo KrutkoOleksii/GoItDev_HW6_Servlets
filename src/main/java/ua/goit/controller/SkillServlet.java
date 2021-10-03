@@ -32,7 +32,7 @@ public class SkillServlet extends HttpServlet {
         if (pathInfo==null || "/".equals(pathInfo)) {
             //sendAsJson(resp, repository.findAll());
             req.setAttribute("skills",repository.findAll());
-            req.getRequestDispatcher("/view/skills.jsp").forward(req,resp);
+            req.getRequestDispatcher("/view/skill/skills.jsp").forward(req,resp);
             return;
         }
         String[] split = pathInfo.split("/");
@@ -44,7 +44,7 @@ public class SkillServlet extends HttpServlet {
         List<Skill> skills = new ArrayList<>();
         skills.add(repository.findById(Long.parseLong(split[1])).get());
         req.setAttribute("skills", skills);
-        req.getRequestDispatcher("/view/skills.jsp").forward(req,resp);
+        req.getRequestDispatcher("/view/skill/skills.jsp").forward(req,resp);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class SkillServlet extends HttpServlet {
                 .skillLevel(req.getParameter("level"))
                 .build();
         repository.save(skill);
-        req.getRequestDispatcher("/index.html").forward(req,resp);
+        req.getRequestDispatcher("/index.jsp").forward(req,resp);
     }
 
     @Override

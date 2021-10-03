@@ -32,7 +32,7 @@ public class ProjectServlet extends HttpServlet {
         if (pathInfo==null || "/".equals(pathInfo)) {
             //sendAsJson(resp, repository.findAll());
             req.setAttribute("projects",repository.findAll());
-            req.getRequestDispatcher("/view/projects.jsp").forward(req,resp);
+            req.getRequestDispatcher("/view/project/projects.jsp").forward(req,resp);
             return;
         }
         String[] split = pathInfo.split("/");
@@ -44,7 +44,7 @@ public class ProjectServlet extends HttpServlet {
         List<Project> projects = new ArrayList<>();
         projects.add(repository.findById(Long.parseLong(split[1])).get());
         req.setAttribute("projects", projects);
-        req.getRequestDispatcher("/view/projects.jsp").forward(req,resp);
+        req.getRequestDispatcher("/view/project/projects.jsp").forward(req,resp);
     }
 
     @Override
@@ -60,7 +60,7 @@ public class ProjectServlet extends HttpServlet {
                 .customerId(Long.parseLong(req.getParameter("customerId")))
                 .build();
         repository.save(project);
-        req.getRequestDispatcher("/index.html").forward(req,resp);
+        req.getRequestDispatcher("/index.jsp").forward(req,resp);
     }
 
     @Override

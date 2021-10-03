@@ -32,7 +32,7 @@ public class DeveloperServlet extends HttpServlet {
         if (pathInfo==null || "/".equals(pathInfo)) {
             //sendAsJson(resp, repository.findAll());
             req.setAttribute("developers",repository.findAll());
-            req.getRequestDispatcher("/view/developers.jsp").forward(req,resp);
+            req.getRequestDispatcher("/view/developer/developers.jsp").forward(req,resp);
             return;
         }
         String[] split = pathInfo.split("/");
@@ -44,7 +44,7 @@ public class DeveloperServlet extends HttpServlet {
         List<Developer> developers = new ArrayList<>();
         developers.add(repository.findById(Long.parseLong(split[1])).get());
         req.setAttribute("developers", developers);
-        req.getRequestDispatcher("/view/developers.jsp").forward(req,resp);
+        req.getRequestDispatcher("/view/developer/developers.jsp").forward(req,resp);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class DeveloperServlet extends HttpServlet {
                 .companyId(Long.parseLong(req.getParameter("companyId")))
                 .build();
         repository.save(developer);
-        req.getRequestDispatcher("/index.html").forward(req,resp);
+        req.getRequestDispatcher("/index.jsp").forward(req,resp);
     }
 
     @Override

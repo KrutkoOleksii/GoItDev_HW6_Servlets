@@ -3,8 +3,12 @@
 <html>
     <head>
         <title>Projects</title>
+        <style>
+            <%@include file="/style.css" %>
+        </style>
     </head>
     <body>
+    <c:import url="/navibar.jsp"/>
         <h2>Projects</h2>
         <p>
         <table border=1 cellpadding=8>

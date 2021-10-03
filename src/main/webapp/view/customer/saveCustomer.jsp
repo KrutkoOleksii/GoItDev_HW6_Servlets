@@ -7,9 +7,10 @@
     <body>
         <h2>Customer parameters:</h2>
         <p>
-            <form name="customerForm" method="post" action="customers">
+            <form name="customerForm" method="post" action="create">
                 Name: <input type="text" name="name"/> <br/>
                 Code: <input type="text" name="code"/> <br/>
+
                 <input type="submit" value="Add customer" />
             </form>
         </p>
