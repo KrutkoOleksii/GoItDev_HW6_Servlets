@@ -1,6 +1,9 @@
 package ua.goit.controller;
 
 import com.google.gson.Gson;
+import ua.goit.model.Company;
+import ua.goit.model.Customer;
+import ua.goit.model.Developer;
 import ua.goit.model.Project;
 import ua.goit.repository.BaseRepository;
 import ua.goit.repository.Factory;
@@ -20,10 +23,14 @@ import java.util.stream.Collectors;
 public class ProjectServlet extends HttpServlet {
 
     private final BaseRepository<Long, Project> repository;
+    private final BaseRepository<Long, Company> repositoryCompany;
+    private final BaseRepository<Long, Customer> repositoryCustomer;
     private final Gson gson = new Gson();
 
     public ProjectServlet() {
         repository = Factory.of(Project.class);
+        repositoryCompany = Factory.of(Company.class);
+        repositoryCustomer = Factory.of(Customer.class);
     }
 
     @Override
@@ -40,11 +47,12 @@ public class ProjectServlet extends HttpServlet {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
-        //sendAsJson(resp, repository.findById(Long.parseLong(split[1])));
-        List<Project> projects = new ArrayList<>();
-        projects.add(repository.findById(Long.parseLong(split[1])).get());
-        req.setAttribute("projects", projects);
-        req.getRequestDispatcher("/view/project/projects.jsp").forward(req,resp);
+        String reqPathInfo = req.getPathInfo();
+        Project project = repository.findById(Long.parseLong(reqPathInfo.substring(1))).get();
+        req.setAttribute("project", project);
+        req.setAttribute("company", repositoryCompany.getOne(project.getCompanyId()));
+        req.setAttribute("customer", repositoryCustomer.getOne(project.getCustomerId()));
+        req.getRequestDispatcher("/view/project/projectDetails.jsp").forward(req,resp);
     }
 
     @Override
