@@ -20,8 +20,9 @@
         <c:forEach var="company" items="${companies}">
              <tr>
                   <td><c:out value="${company.id}"/></td>
-                  <td><c:out value="${company.name}"/></td>
+                  <td><a href="${PageContext.request.contextPath}/company/${company.id}"><c:out value="${company.name}"/></a></td>
                   <td><c:out value="${company.code}"/></td>
+
                   <td><button onclick="location.href='/pm/company/${company.id}'"/>UPDATE</button></td>
              </tr>
         </c:forEach>

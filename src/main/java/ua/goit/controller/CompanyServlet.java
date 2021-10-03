@@ -39,10 +39,10 @@ public class CompanyServlet extends HttpServlet {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
-        List<Company> companies = new ArrayList<>();
-        companies.add(repository.findById(Long.parseLong(split[1])).get());
-        req.setAttribute("companies", companies);
-        req.getRequestDispatcher("/view/company/companies.jsp").forward(req,resp);
+        String reqPathInfo = req.getPathInfo();
+        Company company = repository.findById(Long.parseLong(reqPathInfo.substring(1))).get();
+        req.setAttribute("company", company);
+        req.getRequestDispatcher("/view/company/companyDetails.jsp").forward(req,resp);
     }
 
     @Override

@@ -14,7 +14,8 @@
 
 <c:import url="navibar.jsp"/>
 <div><img src="https://www.matrixcubes.com/content/images/all/09/matrix-project-management-systems.png"
-          alt="Project management system"/></div>
+          alt="Project management system"/>
+</div>
 
 <!-- header -->
 <div>

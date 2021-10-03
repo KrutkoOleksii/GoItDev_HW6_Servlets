@@ -1,6 +1,7 @@
 package ua.goit.controller;
 
 import com.google.gson.Gson;
+import ua.goit.model.Company;
 import ua.goit.model.Developer;
 import ua.goit.repository.BaseRepository;
 import ua.goit.repository.Factory;
@@ -12,18 +13,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @WebServlet("/developer/*")
 public class DeveloperServlet extends HttpServlet {
 
     private final BaseRepository<Long, Developer> repository;
+    private final BaseRepository<Long, Company> repositoryCompany;
     private final Gson gson = new Gson();
 
     public DeveloperServlet() {
         repository = Factory.of(Developer.class);
+        repositoryCompany = Factory.of(Company.class);
     }
 
     @Override
@@ -40,11 +41,11 @@ public class DeveloperServlet extends HttpServlet {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
-        //sendAsJson(resp, repository.findById(Long.parseLong(split[1])));
-        List<Developer> developers = new ArrayList<>();
-        developers.add(repository.findById(Long.parseLong(split[1])).get());
-        req.setAttribute("developers", developers);
-        req.getRequestDispatcher("/view/developer/developers.jsp").forward(req,resp);
+        String reqPathInfo = req.getPathInfo();
+        Developer developer = repository.findById(Long.parseLong(reqPathInfo.substring(1))).get();
+        req.setAttribute("developer", developer);
+        req.setAttribute("company", repositoryCompany.getOne(developer.getCompanyId()));
+        req.getRequestDispatcher("/view/developer/developerDetails.jsp").forward(req,resp);
     }
 
     @Override

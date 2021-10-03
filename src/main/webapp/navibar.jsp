@@ -41,13 +41,13 @@
         </div>
     </div>
     <div class="dropdown">
-            <button class="dropbtn">Skill
-                <i></i>
-            </button>
-            <div class="dropdown-content">
-                <a href="${pageContext.request.contextPath}/skill/">Show Skills</a>
-                <a href="${pageContext.request.contextPath}/skill/findSkill">Find Skill</a>
-                <a href="${pageContext.request.contextPath}/skill/add">Create Skill</a>
-            </div>
+        <button class="dropbtn">Skill
+            <i></i>
+        </button>
+        <div class="dropdown-content">
+            <a href="${pageContext.request.contextPath}/skill/">Show Skills</a>
+            <a href="${pageContext.request.contextPath}/skill/findSkill">Find Skill</a>
+            <a href="${pageContext.request.contextPath}/skill/add">Create Skill</a>
         </div>
+    </div>
 </div>
