@@ -11,11 +11,11 @@
     <c:import url="/navibar.jsp"/>
         <h2>Company parameters:</h2>
         <p>
-        <form name="companyForm" method="post" action="create">
+        <form name="companySaveForm" method="post" action="create">
             Name: <input type="text" name="name"/> <br/>
             Code: <input type="text" name="code"/> <br/>
 
-            <input type="submit" value="Add company" />
+            <input type="submit" value="Add company" class="button"/>
         </form>
         </p>
     </body>

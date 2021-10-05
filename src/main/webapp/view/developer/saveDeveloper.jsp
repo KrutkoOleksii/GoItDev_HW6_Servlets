@@ -14,7 +14,7 @@
                 Salary: <input type="numeric" name="salary"/> <br/>
                 Company ID: <input type="numeric" name="companyId"/> <br/>
 
-                <input type="submit" value="Add developer" />
+                <input type="submit" value="Add developer"  class="button"/>
             </form>
         </p>
     </body>

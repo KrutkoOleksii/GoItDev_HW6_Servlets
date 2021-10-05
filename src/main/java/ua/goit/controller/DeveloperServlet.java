@@ -3,8 +3,9 @@ package ua.goit.controller;
 import com.google.gson.Gson;
 import ua.goit.model.Company;
 import ua.goit.model.Developer;
-import ua.goit.repository.BaseRepository;
-import ua.goit.repository.Factory;
+import ua.goit.service.BaseService;
+import ua.goit.service.CompanyService;
+import ua.goit.service.DeveloperService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,33 +19,54 @@ import java.util.stream.Collectors;
 @WebServlet("/developer/*")
 public class DeveloperServlet extends HttpServlet {
 
-    private final BaseRepository<Long, Developer> repository;
-    private final BaseRepository<Long, Company> repositoryCompany;
     private final Gson gson = new Gson();
+    private final BaseService<Long, Developer> developerBaseService;
+    private final BaseService<Long, Company> companyBaseService;
 
     public DeveloperServlet() {
-        repository = Factory.of(Developer.class);
-        repositoryCompany = Factory.of(Company.class);
+        companyBaseService = new CompanyService();
+        developerBaseService = new DeveloperService();
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+        String action = getAction(req);
         String pathInfo = req.getPathInfo();
+        String[] split = pathInfo.split("/");
         if (pathInfo==null || "/".equals(pathInfo)) {
             //sendAsJson(resp, repository.findAll());
-            req.setAttribute("developers",repository.findAll());
+            req.setAttribute("developers",developerBaseService.readAll(Developer.class));
             req.getRequestDispatcher("/view/developer/developers.jsp").forward(req,resp);
             return;
         }
-        String[] split = pathInfo.split("/");
-        if (split.length!=2){
+        else if (action.startsWith("/findDeveloper")) {
+            req.getRequestDispatcher("/view/developer/findDeveloper.jsp").forward(req,resp);
+            return;
+        }
+        else if (action.startsWith("/find")) {
+            String name = req.getParameter("name");
+            Developer developer = developerBaseService.findByName(Developer.class, name).get();
+            req.setAttribute("developer", developer);
+            req.setAttribute("company", companyBaseService.findById(Company.class,developer.getCompanyId()).get());
+            req.getRequestDispatcher("/view/developer/developerDetails.jsp").forward(req,resp);
+            return;
+        }
+        else if (action.startsWith("/addDeveloper")) {
+            req.getRequestDispatcher("/view/developer/saveDeveloper.jsp").forward(req,resp);
+            return;
+        }
+        else if (action.startsWith("/deleteDeveloper")) {
+            req.getRequestDispatcher("/view/developer/developers.jsp").forward(req,resp);
+            return;
+        }
+        else if (split.length!=2){
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
         String reqPathInfo = req.getPathInfo();
-        Developer developer = repository.findById(Long.parseLong(reqPathInfo.substring(1))).get();
+        Developer developer = developerBaseService.findById(Developer.class,Long.parseLong(reqPathInfo.substring(1))).get();
         req.setAttribute("developer", developer);
-        req.setAttribute("company", repositoryCompany.getOne(developer.getCompanyId()));
+        req.setAttribute("company", companyBaseService.findById(Company.class,developer.getCompanyId()).get());
         req.getRequestDispatcher("/view/developer/developerDetails.jsp").forward(req,resp);
     }
 
@@ -57,21 +79,23 @@ public class DeveloperServlet extends HttpServlet {
                 .salary(Integer.parseInt(req.getParameter("salary")))
                 .companyId(Long.parseLong(req.getParameter("companyId")))
                 .build();
-        repository.save(developer);
-        req.getRequestDispatcher("/index.jsp").forward(req,resp);
+        developerBaseService.createEntity(Developer.class,developer);
+        req.setAttribute("developer", developer);
+        req.setAttribute("company", companyBaseService.findById(Company.class,developer.getCompanyId()).get());
+        req.getRequestDispatcher("/view/developer/developerDetails.jsp").forward(req,resp);
     }
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String payload = req.getReader().lines().collect(Collectors.joining("\n"));
         Developer developer = gson.fromJson(payload, Developer.class);
-        sendAsJson(resp, repository.save(developer));
+        sendAsJson(resp, developerBaseService.updateEntity(Developer.class,developer));
     }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
         String[] split = req.getPathInfo().split("/");
-        repository.deleteById(Long.parseLong(split[1]));
+        developerBaseService.deleteEntity(Developer.class,Long.parseLong(split[1]));
     }
 
     private void sendAsJson(HttpServletResponse resp, Object payload) throws IOException {
@@ -80,6 +104,12 @@ public class DeveloperServlet extends HttpServlet {
         String result = gson.toJson(payload);
         writer.print(result );
         writer.flush();
+    }
+
+    private String getAction(HttpServletRequest req) {
+        String requestURI = req.getRequestURI();
+        String requestPathWithServletPath = req.getContextPath() + req.getServletPath();
+        return requestURI.substring(requestPathWithServletPath.length());
     }
 
 }

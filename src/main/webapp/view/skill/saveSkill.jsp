@@ -10,7 +10,8 @@
         <form name="skillForm" method="post" action="skills">
             Name (Technology): <input type="text" name="name"/> <br/>
             Level: <input type="text" name="level"/> <br/>
-            <input type="submit" value="Add skill" />
+
+            <input type="submit" value="Add skill"  class="button"/>
         </form>
         </p>
     </body>

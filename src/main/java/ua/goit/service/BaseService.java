@@ -3,6 +3,7 @@ package ua.goit.service;
 import ua.goit.model.BaseEntity;
 import ua.goit.repository.Factory;
 
+import java.util.List;
 import java.util.Optional;
 
 public abstract class BaseService <ID, E extends BaseEntity<ID>> {
@@ -23,7 +24,15 @@ public abstract class BaseService <ID, E extends BaseEntity<ID>> {
         Factory.of(aClass).deleteById(id);
     }
 
+    public List<E> readAll(Class<E> aClass) {
+        return Factory.of(aClass).findAll();
+    }
+
     public Optional<E> findById(Class<E> aClass, ID id) {
         return Factory.of(aClass).findById(id);
+    }
+
+    public Optional<E> findByName(Class<E> aClass, String name) {
+        return Factory.of(aClass).findByName(name);
     }
 }

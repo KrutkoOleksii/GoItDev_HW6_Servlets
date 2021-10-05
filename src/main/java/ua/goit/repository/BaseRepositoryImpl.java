@@ -33,6 +33,7 @@ public class BaseRepositoryImpl  <ID, E extends BaseEntity<ID>> implements Close
     private final PreparedStatement deletePreparedStatement;
     private final PreparedStatement createPreparedStatement;
     private final PreparedStatement updatePreparedStatement;
+    private final PreparedStatement findByNamePreparedStatement;
 
     @SneakyThrows
     public BaseRepositoryImpl(Class<E> modelClass) {
@@ -65,6 +66,8 @@ public class BaseRepositoryImpl  <ID, E extends BaseEntity<ID>> implements Close
                 "INSERT INTO " + table + " (" + fieldsForCreate + ") VALUES (" + countValues + ")", generatedColumns);
         this.updatePreparedStatement = connection.prepareStatement(
                 "UPDATE " + table + " SET " + fieldsForUpdate + " WHERE id=?", generatedColumns);
+        this.findByNamePreparedStatement = connection.prepareStatement(
+                "SELECT * FROM " + table + " WHERE name=?", generatedColumns);
     }
 
     private  String getColumn(Field modelField) {
@@ -137,6 +140,16 @@ public class BaseRepositoryImpl  <ID, E extends BaseEntity<ID>> implements Close
     public Optional<E> findById(ID id) {
         findByIdPreparedStatement.setObject(1, id);
         final List<E> list = parse(findByIdPreparedStatement.executeQuery());
+        if (list.isEmpty()) return Optional.empty();
+        if (list.size() > 1) throw  new RuntimeException("return more than one result");
+        return Optional.of(list.get(0));
+    }
+
+    @SneakyThrows
+    @Override
+    public Optional<E> findByName(String name) {
+        findByNamePreparedStatement.setObject(1, name);
+        final List<E> list = parse(findByNamePreparedStatement.executeQuery());
         if (list.isEmpty()) return Optional.empty();
         if (list.size() > 1) throw  new RuntimeException("return more than one result");
         return Optional.of(list.get(0));

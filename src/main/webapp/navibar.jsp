@@ -7,7 +7,7 @@
         <div class="dropdown-content">
             <a href="${pageContext.request.contextPath}/company/">Show Companies</a>
             <a href="${pageContext.request.contextPath}/company/findCompany">Find Company</a>
-            <a href="${pageContext.request.contextPath}/company/add">Create Company</a>
+            <a href="${pageContext.request.contextPath}/company/addCompany">Create Company</a>
         </div>
     </div>
     <div class="dropdown">
@@ -17,7 +17,7 @@
         <div class="dropdown-content">
             <a href="${pageContext.request.contextPath}/customer/">Show Customers</a>
             <a href="${pageContext.request.contextPath}/customer/findCustomer">Find Customer</a>
-            <a href="${pageContext.request.contextPath}/customer/add">Create Customer</a>
+            <a href="${pageContext.request.contextPath}/customer/addCustomer">Create Customer</a>
         </div>
     </div>
     <div class="dropdown">

@@ -16,7 +16,7 @@
 <div><img src="https://www.matrixcubes.com/content/images/all/09/matrix-project-management-systems.png"
           alt="Project management system"/>
 </div>
-
+<%--
 <!-- header -->
 <div>
     <h2>Project management (homework #6 - Servlets)</h2>
@@ -68,5 +68,6 @@
         </tr>
     </table>
 </div>
+--%>
 </body>
 </html>

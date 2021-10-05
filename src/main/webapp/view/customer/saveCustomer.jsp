@@ -11,7 +11,7 @@
                 Name: <input type="text" name="name"/> <br/>
                 Code: <input type="text" name="code"/> <br/>
 
-                <input type="submit" value="Add customer" />
+                <input type="submit" value="Add customer"  class="button"/>
             </form>
         </p>
     </body>

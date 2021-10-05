@@ -14,7 +14,7 @@
             Company ID: <input type="numeric" name="companyId"/> <br/>
             Customer ID: <input type="numeric" name="customerId"/> <br/>
 
-            <input type="submit" value="Add project" />
+            <input type="submit" value="Add project"  class="button"/>
         </form>
         </p>
     </body>

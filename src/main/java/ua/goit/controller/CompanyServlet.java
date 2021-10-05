@@ -2,8 +2,8 @@ package ua.goit.controller;
 
 import com.google.gson.Gson;
 import ua.goit.model.Company;
-import ua.goit.repository.BaseRepository;
-import ua.goit.repository.Factory;
+import ua.goit.service.BaseService;
+import ua.goit.service.CompanyService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,35 +12,55 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
+
 
 @WebServlet("/company/*")
 public class CompanyServlet extends HttpServlet {
 
-    private final BaseRepository<Long,Company> repository;
+    //private final BaseRepository<Long,Company> repository;
+    private final BaseService<Long,Company> companyBaseService= new CompanyService();
     private final Gson gson = new Gson();
 
     public CompanyServlet() {
-        repository = Factory.of(Company.class);
+        //repository = Factory.of(Company.class);
+        //companyBaseService = new CompanyService();
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         String action = getAction(req);
         String pathInfo = req.getPathInfo();
+        String[] split = pathInfo.split("/");
         if (pathInfo==null || "/".equals(pathInfo)) {
-            req.setAttribute("companies",repository.findAll());
+            req.setAttribute("companies",companyBaseService.readAll(Company.class));
             req.getRequestDispatcher("/view/company/companies.jsp").forward(req,resp);
             return;
         }
-        String[] split = pathInfo.split("/");
-        if (split.length!=2){
+        else if (action.startsWith("/findCompany")) {
+            req.getRequestDispatcher("/view/company/findCompany.jsp").forward(req,resp);
+            return;
+        }
+        else if (action.startsWith("/find")) {
+            String name = req.getParameter("name");
+            Company company = companyBaseService.findByName(Company.class, name).get();
+            req.setAttribute("company", company);
+            req.getRequestDispatcher("/view/company/companyDetails.jsp").forward(req,resp);
+            return;
+        }
+        else if (action.startsWith("/addCompany")) {
+            req.getRequestDispatcher("/view/company/saveCompany.jsp").forward(req,resp);
+            return;
+        }
+        else if (action.startsWith("/deleteCompany")) {
+            req.getRequestDispatcher("/view/company/companies.jsp").forward(req,resp);
+            return;
+        }
+        else if (split.length!=2){
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
         String reqPathInfo = req.getPathInfo();
-        Company company = repository.findById(Long.parseLong(reqPathInfo.substring(1))).get();
+        Company company = companyBaseService.findById(Company.class, Long.parseLong(reqPathInfo.substring(1))).get();
         req.setAttribute("company", company);
         req.getRequestDispatcher("/view/company/companyDetails.jsp").forward(req,resp);
     }
@@ -53,8 +73,9 @@ public class CompanyServlet extends HttpServlet {
                     .name(req.getParameter("name"))
                     .code(req.getParameter("code"))
                     .build();
-            repository.save(company);
-            req.getRequestDispatcher("/index.jsp").forward(req, resp);
+            companyBaseService.createEntity(Company.class, company);
+            req.setAttribute("company", company);
+            req.getRequestDispatcher("/view/company/companyDetails.jsp").forward(req,resp);
         }
     }
 
@@ -68,7 +89,7 @@ public class CompanyServlet extends HttpServlet {
                 .name(req.getParameter("name"))
                 .code(req.getParameter("code"))
                 .build();
-        repository.save(company);
+        companyBaseService.updateEntity(Company.class, company);
         req.getRequestDispatcher("/view/index.jsp").forward(req,resp);
 
     }
@@ -76,7 +97,7 @@ public class CompanyServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
         String[] split = req.getPathInfo().split("/");
-        repository.deleteById(Long.parseLong(split[1]));
+        companyBaseService.deleteEntity(Company.class, Long.parseLong(split[1]));
     }
 
     private void sendAsJson(HttpServletResponse resp, Object payload) throws IOException {
