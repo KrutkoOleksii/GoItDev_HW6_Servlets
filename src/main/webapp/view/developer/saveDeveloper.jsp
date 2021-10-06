@@ -3,11 +3,15 @@
 <html>
     <head>
         <title>Add Developer</title>
+        <style>
+            <%@include file="/style.css" %>
+        </style>
     </head>
     <body>
+    <c:import url="/navibar.jsp"/>
         <h2>Developer parameters:</h2>
         <p>
-            <form name="developerForm" method="post" action="developers">
+            <form name="developerForm" method="post" action="create">
                 Name: <input type="text" name="name"/> <br/>
                 Age: <input type="numeric" name="age"/> <br/>
                 Gender: <input type="text" name="gender"/> <br/>

@@ -20,7 +20,7 @@
         <c:forEach var="company" items="${companies}">
              <tr>
                   <td><c:out value="${company.id}"/></td>
-                  <td><a href="${PageContext.request.contextPath}/company/${company.id}"><c:out value="${company.name}"/></a></td>
+                  <td><a href="${PageContext.request.contextPath}/pm/company/find?name=${company.name}"><c:out value="${company.name}"/></a></td>
                   <td><c:out value="${company.code}"/></td>
 
                   <%--

@@ -1,6 +1,5 @@
 package ua.goit.controller;
 
-import com.google.gson.Gson;
 import ua.goit.model.Company;
 import ua.goit.service.BaseService;
 import ua.goit.service.CompanyService;
@@ -11,19 +10,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
-
 
 @WebServlet("/company/*")
 public class CompanyServlet extends HttpServlet {
 
-    //private final BaseRepository<Long,Company> repository;
-    private final BaseService<Long,Company> companyBaseService= new CompanyService();
-    private final Gson gson = new Gson();
+    private final BaseService<Long,Company> companyBaseService;
 
     public CompanyServlet() {
-        //repository = Factory.of(Company.class);
-        //companyBaseService = new CompanyService();
+        companyBaseService = new CompanyService();
     }
 
     @Override
@@ -37,7 +31,8 @@ public class CompanyServlet extends HttpServlet {
             return;
         }
         else if (action.startsWith("/findCompany")) {
-            req.getRequestDispatcher("/view/company/findCompany.jsp").forward(req,resp);
+            req.setAttribute("entity","company");
+            req.getRequestDispatcher("/view/findByName.jsp").forward(req,resp);
             return;
         }
         else if (action.startsWith("/find")) {
@@ -51,18 +46,26 @@ public class CompanyServlet extends HttpServlet {
             req.getRequestDispatcher("/view/company/saveCompany.jsp").forward(req,resp);
             return;
         }
-        else if (action.startsWith("/deleteCompany")) {
-            req.getRequestDispatcher("/view/company/companies.jsp").forward(req,resp);
+        else if (action.startsWith("/updateCompany")) {
+            req.getRequestDispatcher("/view/company/saveCompany.jsp").forward(req,resp);
             return;
+        }
+        else if (action.startsWith("/deleteCompany")) {
+            req.setAttribute("entity","company");
+            req.getRequestDispatcher("/view/deleteById.jsp").forward(req,resp);
+            return;
+        }
+        else if (action.startsWith("/delete")) {
+            doDelete(req,resp);
         }
         else if (split.length!=2){
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
-        String reqPathInfo = req.getPathInfo();
-        Company company = companyBaseService.findById(Company.class, Long.parseLong(reqPathInfo.substring(1))).get();
-        req.setAttribute("company", company);
-        req.getRequestDispatcher("/view/company/companyDetails.jsp").forward(req,resp);
+//        String reqPathInfo = req.getPathInfo();
+//        Company company = companyBaseService.findById(Company.class, Long.parseLong(reqPathInfo.substring(1))).get();
+//        req.setAttribute("company", company);
+//        req.getRequestDispatcher("/view/company/companyDetails.jsp").forward(req,resp);
     }
 
     @Override
@@ -81,10 +84,6 @@ public class CompanyServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-//        String payload = req.getReader().lines().collect(Collectors.joining("\n"));
-//        Company company = gson.fromJson(payload, Company.class);
-//        sendAsJson(resp, repository.save(company));
-        //req.setAttribute("companyId",1L);
         Company company = Company.builder()
                 .name(req.getParameter("name"))
                 .code(req.getParameter("code"))
@@ -95,17 +94,11 @@ public class CompanyServlet extends HttpServlet {
     }
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
-        String[] split = req.getPathInfo().split("/");
-        companyBaseService.deleteEntity(Company.class, Long.parseLong(split[1]));
-    }
-
-    private void sendAsJson(HttpServletResponse resp, Object payload) throws IOException {
-        resp.setContentType("application/json");
-        PrintWriter writer = resp.getWriter();
-        String result = gson.toJson(payload);
-        writer.print(result );
-        writer.flush();
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String id = req.getParameter("id");
+        companyBaseService.deleteEntity(Company.class, Long.parseLong(id));
+        req.setAttribute("companies",companyBaseService.readAll(Company.class));
+        req.getRequestDispatcher("/view/company/companies.jsp").forward(req,resp);
     }
 
     private String getAction(HttpServletRequest req) {

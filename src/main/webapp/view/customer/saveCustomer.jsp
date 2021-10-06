@@ -3,11 +3,15 @@
 <html>
     <head>
         <title>Add Customer</title>
+        <style>
+            <%@include file="/style.css" %>
+        </style>
     </head>
     <body>
+    <c:import url="/navibar.jsp"/>
         <h2>Customer parameters:</h2>
         <p>
-            <form name="customerForm" method="post" action="create">
+            <form name="customerSaveForm" method="post" action="create">
                 Name: <input type="text" name="name"/> <br/>
                 Code: <input type="text" name="code"/> <br/>
 

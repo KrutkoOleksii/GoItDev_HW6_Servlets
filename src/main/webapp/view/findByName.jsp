@@ -2,29 +2,23 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Find Developer</title>
+        <title>Find ${entity}</title>
         <style>
             <%@include file="/style.css" %>
         </style>
     </head>
     <body>
     <c:import url="/navibar.jsp"/>
-        <h2>Find company by name:</h2>
+        <h2>Find ${entity} by name:</h2>
         <p>
-        <form name="developerFindForm" method="get" action="find">
+        <form name=${entity}"FindForm" method="get" action="findByName">
         <table>
             <tr>
-                <th>Enter developer name:</th>
+                <th>Enter ${entity} name:</th>
                 <td> <input type="text" name="name"/> <br/> </td>
             </tr>
-            <%--
-            <tr>
-                <th>Enter developer ID:</th>
-                <td><input type="numeric" name="id"/> <br/></td>
-            </tr>
-            --%>
         </table>
-        <input type="submit" value="Find developer"  class="button"/>
+        <input type="submit" value="Find ${entity}"  class="button"/>
         </form>
         </p>
         <p>${message}</p>
