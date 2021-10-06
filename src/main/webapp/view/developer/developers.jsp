@@ -21,13 +21,15 @@
              <th>Company ID</th>
         </tr>
         <c:forEach var="developer" items="${developers}">
-             <tr>
-                  <td><c:out value="${developer.id}"/></td>
-                  <td><c:out value="${developer.name}"/></td>
-                  <td><c:out value="${developer.age}"/></td>
-                  <td><c:out value="${developer.gender}"/></td>
-                  <td><c:out value="${developer.salary}"/></td>
-                  <td><c:out value="${developer.companyId}"/></td>
+            <tr>
+            <td><c:out value="${developer.id}"/></td>
+            <td><a href="${PageContext.request.contextPath}/pm/developer/find?id=${developer.id}"><c:out value="${developer.name}"/></a></td>
+            <td><c:out value="${developer.age}"/></td>
+            <td><c:out value="${developer.gender}"/></td>
+            <td><c:out value="${developer.salary}"/></td>
+            <td><c:out value="${developer.companyId}"/></td>
+            <td><button onclick="location.href='/pm/developer/updateDeveloper?id=${developer.id}'"  class="button"/>UPDATE</button></td>
+            <td><button onclick="location.href='/pm/developer/delete?id=${developer.id}'"  class="button"/>DELETE</button></td>
              </tr>
         </c:forEach>
         </table>

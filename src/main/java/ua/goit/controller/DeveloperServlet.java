@@ -1,6 +1,7 @@
 package ua.goit.controller;
 
 import ua.goit.model.Company;
+import ua.goit.model.Customer;
 import ua.goit.model.Developer;
 import ua.goit.service.BaseService;
 import ua.goit.service.CompanyService;
@@ -32,46 +33,37 @@ public class DeveloperServlet extends HttpServlet {
         if (pathInfo==null || "/".equals(pathInfo)) {
             req.setAttribute("developers",developerBaseService.readAll(Developer.class));
             req.getRequestDispatcher("/view/developer/developers.jsp").forward(req,resp);
-            return;
-        }
-        else if (action.startsWith("/findDeveloper")) {
+        } else if (action.startsWith("/findDeveloper")) {
             req.setAttribute("entity","developer");
             req.getRequestDispatcher("/view/findByName.jsp").forward(req,resp);
-            return;
-        }
-        else if (action.startsWith("/find")) {
-            String name = req.getParameter("name");
-            Developer developer = developerBaseService.findByName(Developer.class, name).get();
+        } else if (action.startsWith("/find")) {
+            Developer developer;
+            if (req.getParameter("id")==null) {
+                developer = developerBaseService.findByName(Developer.class, req.getParameter("name")).get();
+            } else {
+                developer = developerBaseService.findById(Developer.class, Long.parseLong(req.getParameter("id"))).get();
+            }
             req.setAttribute("developer", developer);
             req.setAttribute("company", companyBaseService.findById(Company.class,developer.getCompanyId()).get());
             req.getRequestDispatcher("/view/developer/developerDetails.jsp").forward(req,resp);
-            return;
-        }
-        else if (action.startsWith("/addDeveloper")) {
+        } else if (action.startsWith("/addDeveloper")) {
+            req.setAttribute("mode", 0);
             req.getRequestDispatcher("/view/developer/saveDeveloper.jsp").forward(req,resp);
-            return;
-        }
-        else if (action.startsWith("/updateDeveloper")) {
+        } else if (action.startsWith("/updateDeveloper")) {
+            Developer developer = developerBaseService.findById(Developer.class, Long.parseLong(req.getParameter("id"))).get();
+            req.setAttribute("developer", developer);
+            req.setAttribute("mode", 1);
             req.getRequestDispatcher("/view/developer/saveDeveloper.jsp").forward(req,resp);
-            return;
-        }
-        else if (action.startsWith("/deleteDeveloper")) {
+        } else if (action.startsWith("/update")) {
+            doPut(req,resp);
+        } else if (action.startsWith("/deleteDeveloper")) {
             req.setAttribute("entity","developer");
             req.getRequestDispatcher("/view/deleteById.jsp").forward(req,resp);
-            return;
-        }
-        else if (action.startsWith("/delete")) {
+        } else if (action.startsWith("/delete")) {
             doDelete(req,resp);
-        }
-        else if (split.length!=2){
+        } else if (split.length!=2){
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
-            return;
         }
-//        String reqPathInfo = req.getPathInfo();
-//        Developer developer = developerBaseService.findById(Developer.class,Long.parseLong(reqPathInfo.substring(1))).get();
-//        req.setAttribute("developer", developer);
-//        req.setAttribute("company", companyBaseService.findById(Company.class,developer.getCompanyId()).get());
-//        req.getRequestDispatcher("/view/developer/developerDetails.jsp").forward(req,resp);
     }
 
     @Override
@@ -86,15 +78,15 @@ public class DeveloperServlet extends HttpServlet {
                     .companyId(Long.parseLong(req.getParameter("companyId")))
                     .build();
             developerBaseService.createEntity(Developer.class, developer);
-            req.setAttribute("developer", developer);
-            req.setAttribute("company", companyBaseService.findById(Company.class, developer.getCompanyId()).get());
-            req.getRequestDispatcher("/view/developer/developerDetails.jsp").forward(req, resp);
+            req.setAttribute("developers",developerBaseService.readAll(Developer.class));
+            req.getRequestDispatcher("/view/developer/developers.jsp").forward(req,resp);
         }
     }
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         Developer developer = Developer.builder()
+                .id(Long.parseLong(req.getParameter("id")))
                 .name(req.getParameter("name"))
                 .age(Integer.parseInt(req.getParameter("age")))
                 .gender(req.getParameter("gender"))
@@ -103,8 +95,8 @@ public class DeveloperServlet extends HttpServlet {
                 .build();
         developerBaseService.createEntity(Developer.class, developer);
         req.setAttribute("developer", developer);
-        req.setAttribute("company", companyBaseService.findById(Company.class, developer.getCompanyId()).get());
-        req.getRequestDispatcher("/view/developer/developerDetails.jsp").forward(req, resp);
+        req.setAttribute("developers",developerBaseService.readAll(Developer.class));
+        req.getRequestDispatcher("/view/developer/developers.jsp").forward(req,resp);
     }
 
     @Override

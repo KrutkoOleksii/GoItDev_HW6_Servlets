@@ -38,47 +38,38 @@ public class ProjectServlet extends HttpServlet {
             req.setAttribute("projects",projectBaseService.readAll(Project.class));
             req.getRequestDispatcher("/view/project/projects.jsp").forward(req,resp);
             return;
-        }
-        else if (action.startsWith("/findProject")) {
+        } else if (action.startsWith("/findProject")) {
             req.setAttribute("entity","project");
             req.getRequestDispatcher("/view/findByName.jsp").forward(req,resp);
-            return;
-        }
-        else if (action.startsWith("/find")) {
-            String name = req.getParameter("name");
-            Project project = projectBaseService.findByName(Project.class, name).get();
+        } else if (action.startsWith("/find")) {
+            Project project;
+            if (req.getParameter("id")==null) {
+                project = projectBaseService.findByName(Project.class, req.getParameter("name")).get();
+            } else {
+                project = projectBaseService.findById(Project.class, Long.parseLong(req.getParameter("id"))).get();
+            }
             req.setAttribute("project", project);
             req.setAttribute("company", companyBaseService.findById(Company.class,project.getCompanyId()).get());
             req.setAttribute("customer", customerBaseService.findById(Customer.class,project.getCustomerId()).get());
             req.getRequestDispatcher("/view/project/projectDetails.jsp").forward(req,resp);
-            return;
-        }
-        else if (action.startsWith("/addProject")) {
+        } else if (action.startsWith("/addProject")) {
+            req.setAttribute("mode", 0);
             req.getRequestDispatcher("/view/project/saveProject.jsp").forward(req,resp);
-            return;
-        }
-        else if (action.startsWith("/updateProject")) {
+        } else if (action.startsWith("/updateProject")) {
+            Project project = projectBaseService.findById(Project.class, Long.parseLong(req.getParameter("id"))).get();
+            req.setAttribute("project", project);
+            req.setAttribute("mode", 1);
             req.getRequestDispatcher("/view/project/saveProject.jsp").forward(req,resp);
-            return;
-        }
-        else if (action.startsWith("/deleteProject")) {
+        } else if (action.startsWith("/update")) {
+            doPut(req,resp);
+        } else if (action.startsWith("/deleteProject")) {
             req.setAttribute("entity","project");
             req.getRequestDispatcher("/view/deleteById.jsp").forward(req,resp);
-            return;
-        }
-        else if (action.startsWith("/delete")) {
+        } else if (action.startsWith("/delete")) {
             doDelete(req,resp);
-        }
-        else if (split.length!=2){
+        } else if (split.length!=2){
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
-            return;
         }
-//        String reqPathInfo = req.getPathInfo();
-//        Project project = projectBaseService.findById(Project.class,Long.parseLong(reqPathInfo.substring(1))).get();
-//        req.setAttribute("project", project);
-//        req.setAttribute("company", companyBaseService.findById(Company.class,project.getCompanyId()));
-//        req.setAttribute("customer", customerBaseService.findById(Customer.class,project.getCustomerId()));
-//        req.getRequestDispatcher("/view/project/projectDetails.jsp").forward(req,resp);
     }
 
     @Override
@@ -99,8 +90,18 @@ public class ProjectServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+        Project project = Project.builder()
+                .id(Long.parseLong(req.getParameter("id")))
+                .name(req.getParameter("name"))
+                .cost(Integer.parseInt(req.getParameter("cost")))
+                .startDate(req.getParameter("startDate"))
+                .companyId(Long.parseLong(req.getParameter("companyId")))
+                .customerId(Long.parseLong(req.getParameter("customerId")))
+                .build();
+        projectBaseService.createEntity(Project.class, project);
+        req.setAttribute("projects",projectBaseService.readAll(Project.class));
+        req.getRequestDispatcher("/view/project/projects.jsp").forward(req,resp);
     }
 
     @Override

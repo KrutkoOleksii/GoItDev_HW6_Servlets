@@ -28,43 +28,36 @@ public class CustomerServlet extends HttpServlet {
         if (pathInfo==null || "/".equals(pathInfo)) {
             req.setAttribute("customers",customerBaseService.readAll(Customer.class));
             req.getRequestDispatcher("/view/customer/customers.jsp").forward(req,resp);
-            return;
-        }
-        else if (action.startsWith("/findCustomer")) {
+        } else if (action.startsWith("/findCustomer")) {
             req.setAttribute("entity","customer");
             req.getRequestDispatcher("/view/findByName.jsp").forward(req,resp);
-            return;
-        }
-        else if (action.startsWith("/find")) {
-            String name = req.getParameter("name");
-            Customer customer = customerBaseService.findByName(Customer.class, name).get();
+        } else if (action.startsWith("/find")) {
+            Customer customer;
+            if (req.getParameter("id")==null) {
+                customer = customerBaseService.findByName(Customer.class, req.getParameter("name")).get();
+            } else {
+                customer = customerBaseService.findById(Customer.class, Long.parseLong(req.getParameter("id"))).get();
+            }
             req.setAttribute("customer", customer);
             req.getRequestDispatcher("/view/customer/customerDetails.jsp").forward(req,resp);
-            return;
-        }
-        else if (action.startsWith("/addCustomer")) {
+        } else if (action.startsWith("/addCustomer")) {
+            req.setAttribute("mode", 0);
             req.getRequestDispatcher("/view/customer/saveCustomer.jsp").forward(req,resp);
-            return;
-        }
-        else if (action.startsWith("/updateCustomer")) {
+        } else if (action.startsWith("/updateCustomer")) {
+            Customer customer = customerBaseService.findById(Customer.class, Long.parseLong(req.getParameter("id"))).get();
+            req.setAttribute("customer", customer);
+            req.setAttribute("mode", 1);
             req.getRequestDispatcher("/view/customer/saveCustomer.jsp").forward(req,resp);
-            return;
-        }        else if (action.startsWith("/deleteCustomer")) {
+        } else if (action.startsWith("/update")) {
+            doPut(req,resp);
+        } else if (action.startsWith("/deleteCustomer")) {
             req.setAttribute("entity","customer");
             req.getRequestDispatcher("/view/deleteById.jsp").forward(req,resp);
-            return;
-        }
-        else if (action.startsWith("/delete")) {
+        } else if (action.startsWith("/delete")) {
             doDelete(req,resp);
-        }
-        else if (split.length!=2){
+        } else if (split.length!=2){
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
-            return;
         }
-//        String reqPathInfo = req.getPathInfo();
-//        Customer customer = customerBaseService.findById(Customer.class, Long.parseLong(reqPathInfo.substring(1))).get();
-//        req.setAttribute("customer", customer);
-//        req.getRequestDispatcher("/view/customer/ccustomerDetails.jsp").forward(req,resp);
     }
 
     @Override
@@ -76,14 +69,21 @@ public class CustomerServlet extends HttpServlet {
                     .code(req.getParameter("code"))
                     .build();
             customerBaseService.createEntity(Customer.class, customer);
-            req.setAttribute("customer", customer);
-            req.getRequestDispatcher("/view/customer/customerDetails.jsp").forward(req, resp);
+            req.setAttribute("customers",customerBaseService.readAll(Customer.class));
+            req.getRequestDispatcher("/view/customer/customers.jsp").forward(req,resp);
         }
     }
 
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+        Customer customer = Customer.builder()
+                .id(Long.parseLong(req.getParameter("id")))
+                .name(req.getParameter("name"))
+                .code(req.getParameter("code"))
+                .build();
+        customerBaseService.createEntity(Customer.class, customer);
+        req.setAttribute("customers",customerBaseService.readAll(Customer.class));
+        req.getRequestDispatcher("/view/customer/customers.jsp").forward(req,resp);
     }
 
     @Override
