@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet("/developer/*")
 public class DeveloperServlet extends HttpServlet {
@@ -37,15 +38,16 @@ public class DeveloperServlet extends HttpServlet {
             req.setAttribute("entity","developer");
             req.getRequestDispatcher("/view/findByName.jsp").forward(req,resp);
         } else if (action.startsWith("/find")) {
-            Developer developer;
             if (req.getParameter("id")==null) {
-                developer = developerBaseService.findByName(Developer.class, req.getParameter("name")).get();
+                List<Developer> developers = developerBaseService.findByName(Developer.class, req.getParameter("name"));
+                req.setAttribute("developers",developers);
+                req.getRequestDispatcher("/view/developer/developers.jsp").forward(req,resp);
             } else {
-                developer = developerBaseService.findById(Developer.class, Long.parseLong(req.getParameter("id"))).get();
+                Developer developer = developerBaseService.findById(Developer.class, Long.parseLong(req.getParameter("id"))).get();
+                req.setAttribute("developer", developer);
+                req.setAttribute("company", companyBaseService.findById(Company.class,developer.getCompanyId()).get());
+                req.getRequestDispatcher("/view/developer/developerDetails.jsp").forward(req,resp);
             }
-            req.setAttribute("developer", developer);
-            req.setAttribute("company", companyBaseService.findById(Company.class,developer.getCompanyId()).get());
-            req.getRequestDispatcher("/view/developer/developerDetails.jsp").forward(req,resp);
         } else if (action.startsWith("/addDeveloper")) {
             req.setAttribute("mode", 0);
             req.getRequestDispatcher("/view/developer/saveDeveloper.jsp").forward(req,resp);

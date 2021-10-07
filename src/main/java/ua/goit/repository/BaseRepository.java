@@ -17,7 +17,7 @@ public interface BaseRepository <ID, E extends BaseEntity<ID>> {
 
     Optional<E> findById(ID id);
 
-    Optional<E> findByName(String name);
+    List<E> findByName(String name);
 
     //void update(ID id, E e);
 

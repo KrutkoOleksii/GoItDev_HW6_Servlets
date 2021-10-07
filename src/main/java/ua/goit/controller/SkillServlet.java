@@ -1,7 +1,6 @@
 package ua.goit.controller;
 
 import com.google.gson.Gson;
-import ua.goit.model.Project;
 import ua.goit.model.Skill;
 import ua.goit.service.BaseService;
 import ua.goit.service.SkillService;
@@ -12,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet("/skill/*")
 public class SkillServlet extends HttpServlet {
@@ -37,20 +37,16 @@ public class SkillServlet extends HttpServlet {
         } else if (action.startsWith("/findSkill")) {
             req.setAttribute("entity","skill");
             req.getRequestDispatcher("/view/findByName.jsp").forward(req,resp);
-//        } else if (action.startsWith("/findById")) {
-//            Long id = Long.parseLong(req.getParameter("id"));
-//            Skill skill = skillBaseService.findById(Skill.class, id).get();
-//            req.setAttribute("skill", skill);
-//            req.getRequestDispatcher("/view/skill/skillDetails.jsp").forward(req,resp);
         } else if (action.startsWith("/find")) {
-            Skill skill;
             if(req.getParameter("id")==null) {
-                skill = skillBaseService.findByName(Skill.class, req.getParameter("name")).get();
+                List<Skill> skills = skillBaseService.findByName(Skill.class, req.getParameter("name"));
+                req.setAttribute("skills",skills);
+                req.getRequestDispatcher("/view/skill/skills.jsp").forward(req,resp);
             } else {
-                skill = skillBaseService.findById(Skill.class, Long.parseLong(req.getParameter("id"))).get();
+                Skill skill = skillBaseService.findById(Skill.class, Long.parseLong(req.getParameter("id"))).get();
+                req.setAttribute("skill", skill);
+                req.getRequestDispatcher("/view/skill/skillDetails.jsp").forward(req,resp);
             }
-            req.setAttribute("skill", skill);
-            req.getRequestDispatcher("/view/skill/skillDetails.jsp").forward(req,resp);
         } else if (action.startsWith("/addSkill")) {
             req.setAttribute("mode", 0);
             req.getRequestDispatcher("/view/skill/saveSkill.jsp").forward(req,resp);

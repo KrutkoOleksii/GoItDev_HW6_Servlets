@@ -32,7 +32,7 @@ public abstract class BaseService <ID, E extends BaseEntity<ID>> {
         return Factory.of(aClass).findById(id);
     }
 
-    public Optional<E> findByName(Class<E> aClass, String name) {
+    public List<E> findByName(Class<E> aClass, String name) {
         return Factory.of(aClass).findByName(name);
     }
 }

@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet("/project/*")
 public class ProjectServlet extends HttpServlet {
@@ -37,21 +38,21 @@ public class ProjectServlet extends HttpServlet {
         if (pathInfo==null || "/".equals(pathInfo)) {
             req.setAttribute("projects",projectBaseService.readAll(Project.class));
             req.getRequestDispatcher("/view/project/projects.jsp").forward(req,resp);
-            return;
         } else if (action.startsWith("/findProject")) {
             req.setAttribute("entity","project");
             req.getRequestDispatcher("/view/findByName.jsp").forward(req,resp);
         } else if (action.startsWith("/find")) {
-            Project project;
             if (req.getParameter("id")==null) {
-                project = projectBaseService.findByName(Project.class, req.getParameter("name")).get();
+                List<Project> projects = projectBaseService.findByName(Project.class, req.getParameter("name"));
+                req.setAttribute("projects",projects);
+                req.getRequestDispatcher("/view/project/projects.jsp").forward(req,resp);
             } else {
-                project = projectBaseService.findById(Project.class, Long.parseLong(req.getParameter("id"))).get();
+                Project project = projectBaseService.findById(Project.class, Long.parseLong(req.getParameter("id"))).get();
+                req.setAttribute("project", project);
+                req.setAttribute("company", companyBaseService.findById(Company.class,project.getCompanyId()).get());
+                req.setAttribute("customer", customerBaseService.findById(Customer.class,project.getCustomerId()).get());
+                req.getRequestDispatcher("/view/project/projectDetails.jsp").forward(req,resp);
             }
-            req.setAttribute("project", project);
-            req.setAttribute("company", companyBaseService.findById(Company.class,project.getCompanyId()).get());
-            req.setAttribute("customer", customerBaseService.findById(Customer.class,project.getCustomerId()).get());
-            req.getRequestDispatcher("/view/project/projectDetails.jsp").forward(req,resp);
         } else if (action.startsWith("/addProject")) {
             req.setAttribute("mode", 0);
             req.getRequestDispatcher("/view/project/saveProject.jsp").forward(req,resp);

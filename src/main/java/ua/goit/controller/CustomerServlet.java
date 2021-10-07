@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet("/customer/*")
 public class CustomerServlet extends HttpServlet {
@@ -32,14 +33,16 @@ public class CustomerServlet extends HttpServlet {
             req.setAttribute("entity","customer");
             req.getRequestDispatcher("/view/findByName.jsp").forward(req,resp);
         } else if (action.startsWith("/find")) {
-            Customer customer;
+
             if (req.getParameter("id")==null) {
-                customer = customerBaseService.findByName(Customer.class, req.getParameter("name")).get();
+                List<Customer> customers = customerBaseService.findByName(Customer.class, req.getParameter("name"));
+                req.setAttribute("customers",customers);
+                req.getRequestDispatcher("/view/customer/customers.jsp").forward(req,resp);
             } else {
-                customer = customerBaseService.findById(Customer.class, Long.parseLong(req.getParameter("id"))).get();
+                Customer customer = customerBaseService.findById(Customer.class, Long.parseLong(req.getParameter("id"))).get();
+                req.setAttribute("customer", customer);
+                req.getRequestDispatcher("/view/customer/customerDetails.jsp").forward(req,resp);
             }
-            req.setAttribute("customer", customer);
-            req.getRequestDispatcher("/view/customer/customerDetails.jsp").forward(req,resp);
         } else if (action.startsWith("/addCustomer")) {
             req.setAttribute("mode", 0);
             req.getRequestDispatcher("/view/customer/saveCustomer.jsp").forward(req,resp);

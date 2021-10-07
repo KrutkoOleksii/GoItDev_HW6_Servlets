@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet("/company/*")
 public class CompanyServlet extends HttpServlet {
@@ -32,14 +33,16 @@ public class CompanyServlet extends HttpServlet {
             req.setAttribute("entity","company");
             req.getRequestDispatcher("/view/findByName.jsp").forward(req,resp);
         } else if (action.startsWith("/find")) {
-            Company company;
+            //Company company;
             if (req.getParameter("id")==null) {
-                company = companyBaseService.findByName(Company.class, req.getParameter("name")).get();
+                List<Company> companies = companyBaseService.findByName(Company.class, req.getParameter("name"));
+                req.setAttribute("companies",companies);
+                req.getRequestDispatcher("/view/company/companies.jsp").forward(req,resp);
             } else {
-                company = companyBaseService.findById(Company.class, Long.parseLong(req.getParameter("id"))).get();
+                Company company = companyBaseService.findById(Company.class, Long.parseLong(req.getParameter("id"))).get();
+                req.setAttribute("company", company);
+                req.getRequestDispatcher("/view/company/companyDetails.jsp").forward(req,resp);
             }
-            req.setAttribute("company", company);
-            req.getRequestDispatcher("/view/company/companyDetails.jsp").forward(req,resp);
         } else if (action.startsWith("/addCompany")) {
             req.setAttribute("mode", 0);
             req.getRequestDispatcher("/view/company/saveCompany.jsp").forward(req,resp);

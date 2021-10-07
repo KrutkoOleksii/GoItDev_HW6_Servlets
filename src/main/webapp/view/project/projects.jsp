@@ -39,6 +39,5 @@
         </c:forEach>
         </table>
         </p>
-        <button onclick="location.href='/pm'">Back to main page</button>
     </body>
 </html>

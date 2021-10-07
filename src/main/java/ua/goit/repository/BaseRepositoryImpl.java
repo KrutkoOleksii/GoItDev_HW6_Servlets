@@ -147,12 +147,13 @@ public class BaseRepositoryImpl  <ID, E extends BaseEntity<ID>> implements Close
 
     @SneakyThrows
     @Override
-    public Optional<E> findByName(String name) {
+    public List<E> findByName(String name) {
         findByNamePreparedStatement.setObject(1, name);
-        final List<E> list = parse(findByNamePreparedStatement.executeQuery());
-        if (list.isEmpty()) return Optional.empty();
-        if (list.size() > 1) throw  new RuntimeException("return more than one result");
-        return Optional.of(list.get(0));
+//        final List<E> list = parse(findByNamePreparedStatement.executeQuery());
+//        if (list.isEmpty()) return Optional.empty();
+//        if (list.size() > 1) throw  new RuntimeException("return more than one result");
+//        return Optional.of(list.get(0));
+        return parse(findByNamePreparedStatement.executeQuery());
     }
 
     @SneakyThrows
