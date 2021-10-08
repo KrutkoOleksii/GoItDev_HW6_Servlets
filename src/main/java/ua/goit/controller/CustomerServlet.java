@@ -33,7 +33,6 @@ public class CustomerServlet extends HttpServlet {
             req.setAttribute("entity","customer");
             req.getRequestDispatcher("/view/findByName.jsp").forward(req,resp);
         } else if (action.startsWith("/find")) {
-
             if (req.getParameter("id")==null) {
                 List<Customer> customers = customerBaseService.findByName(Customer.class, req.getParameter("name"));
                 req.setAttribute("customers",customers);

@@ -1,7 +1,6 @@
 package ua.goit.controller;
 
 import ua.goit.model.Company;
-import ua.goit.model.Customer;
 import ua.goit.model.Developer;
 import ua.goit.service.BaseService;
 import ua.goit.service.CompanyService;

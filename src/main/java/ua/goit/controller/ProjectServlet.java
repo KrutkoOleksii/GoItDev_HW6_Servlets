@@ -1,6 +1,5 @@
 package ua.goit.controller;
 
-import com.google.gson.Gson;
 import ua.goit.model.Company;
 import ua.goit.model.Customer;
 import ua.goit.model.Project;

@@ -33,7 +33,6 @@ public class CompanyServlet extends HttpServlet {
             req.setAttribute("entity","company");
             req.getRequestDispatcher("/view/findByName.jsp").forward(req,resp);
         } else if (action.startsWith("/find")) {
-            //Company company;
             if (req.getParameter("id")==null) {
                 List<Company> companies = companyBaseService.findByName(Company.class, req.getParameter("name"));
                 req.setAttribute("companies",companies);
