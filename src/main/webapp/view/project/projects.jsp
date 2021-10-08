@@ -26,11 +26,13 @@
             <td><a href="${PageContext.request.contextPath}/pm/project/find?id=${project.id}"><c:out value="${project.name}"/></a></td>
             <td><c:out value="${project.cost}"/></td>
 
+<%--
             <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
             <jsp:useBean id="dateValue" class="java.util.Date"/>
             <jsp:setProperty name="dateValue" property="time" value="${project.startDate}"/>
             <td> <fmt:formatDate value="${dateValue}" pattern="dd/MM/yyyy"/> </td>
-
+--%>
+            <td><c:out value="${project.startDate}"/></td>
             <td><c:out value="${project.companyId}"/></td>
             <td><c:out value="${project.customerId}"/></td>
             <td><button onclick="location.href='/pm/project/updateProject?id=${project.id}'"  class="button"/>UPDATE</button></td>
