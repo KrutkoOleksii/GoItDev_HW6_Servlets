@@ -1,6 +1,7 @@
 package ua.goit.service;
 
 import ua.goit.model.BaseEntity;
+import ua.goit.repository.BaseRepository;
 import ua.goit.repository.Factory;
 
 import java.util.List;
@@ -8,31 +9,37 @@ import java.util.Optional;
 
 public abstract class BaseService <ID, E extends BaseEntity<ID>> {
 
-    public E createEntity(Class<E> aClass, E e) {
-        return Factory.of(aClass).save(e);
+    private final BaseRepository<ID,E> baseRepository;
+
+    public BaseService (Class<E> aClass) {
+        this.baseRepository = Factory.of(aClass);
     }
 
-    public E readEntity(Class<E> aClass, ID id) {
-        return Factory.of(aClass).getOne(id);
+    public E createEntity(E e) {
+        return baseRepository.save(e);
     }
 
-    public E updateEntity(Class<E> aClass, E e) {
-        return Factory.of(aClass).save(e);
+    public E readEntity(ID id) {
+        return baseRepository.getOne(id);
     }
 
-    public void deleteEntity(Class<E> aClass, ID id) {
-        Factory.of(aClass).deleteById(id);
+    public E updateEntity(E e) {
+        return baseRepository.save(e);
     }
 
-    public List<E> readAll(Class<E> aClass) {
-        return Factory.of(aClass).findAll();
+    public void deleteEntity(ID id) {
+        baseRepository.deleteById(id);
     }
 
-    public Optional<E> findById(Class<E> aClass, ID id) {
-        return Factory.of(aClass).findById(id);
+    public List<E> readAll() {
+        return baseRepository.findAll();
     }
 
-    public List<E> findByName(Class<E> aClass, String name) {
-        return Factory.of(aClass).findByName(name);
+    public Optional<E> findById(ID id) {
+        return baseRepository.findById(id);
+    }
+
+    public List<E> findByName(String name) {
+        return baseRepository.findByName(name);
     }
 }

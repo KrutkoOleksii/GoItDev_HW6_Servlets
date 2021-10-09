@@ -18,7 +18,7 @@ public class CompanyServlet extends HttpServlet {
     private final BaseService<Long,Company> companyBaseService;
 
     public CompanyServlet() {
-        companyBaseService = new CompanyService();
+        companyBaseService = new CompanyService(Company.class);
     }
 
     @Override
@@ -27,18 +27,18 @@ public class CompanyServlet extends HttpServlet {
         String pathInfo = req.getPathInfo();
         String[] split = pathInfo.split("/");
         if (pathInfo==null || "/".equals(pathInfo)) {
-            req.setAttribute("companies",companyBaseService.readAll(Company.class));
+            req.setAttribute("companies",companyBaseService.readAll());
             req.getRequestDispatcher("/view/company/companies.jsp").forward(req,resp);
         } else if (action.startsWith("/findCompany")) {
             req.setAttribute("entity","company");
             req.getRequestDispatcher("/view/findByName.jsp").forward(req,resp);
         } else if (action.startsWith("/find")) {
             if (req.getParameter("id")==null) {
-                List<Company> companies = companyBaseService.findByName(Company.class, req.getParameter("name"));
+                List<Company> companies = companyBaseService.findByName(req.getParameter("name"));
                 req.setAttribute("companies",companies);
                 req.getRequestDispatcher("/view/company/companies.jsp").forward(req,resp);
             } else {
-                Company company = companyBaseService.findById(Company.class, Long.parseLong(req.getParameter("id"))).get();
+                Company company = companyBaseService.findById(Long.parseLong(req.getParameter("id"))).get();
                 req.setAttribute("company", company);
                 req.getRequestDispatcher("/view/company/companyDetails.jsp").forward(req,resp);
             }
@@ -46,7 +46,7 @@ public class CompanyServlet extends HttpServlet {
             req.setAttribute("mode", 0);
             req.getRequestDispatcher("/view/company/saveCompany.jsp").forward(req,resp);
         } else if (action.startsWith("/updateCompany")) {
-            Company company = companyBaseService.findById(Company.class, Long.parseLong(req.getParameter("id"))).get();
+            Company company = companyBaseService.findById(Long.parseLong(req.getParameter("id"))).get();
             req.setAttribute("company", company);
             req.setAttribute("mode", 1);
             req.getRequestDispatcher("/view/company/saveCompany.jsp").forward(req,resp);
@@ -70,8 +70,8 @@ public class CompanyServlet extends HttpServlet {
                     .name(req.getParameter("name"))
                     .code(req.getParameter("code"))
                     .build();
-            companyBaseService.createEntity(Company.class, company);
-            req.setAttribute("companies",companyBaseService.readAll(Company.class));
+            companyBaseService.createEntity(company);
+            req.setAttribute("companies",companyBaseService.readAll());
             req.getRequestDispatcher("/view/company/companies.jsp").forward(req,resp);
         }
     }
@@ -83,16 +83,16 @@ public class CompanyServlet extends HttpServlet {
                 .name(req.getParameter("name"))
                 .code(req.getParameter("code"))
                 .build();
-        companyBaseService.updateEntity(Company.class, company);
-        req.setAttribute("companies",companyBaseService.readAll(Company.class));
+        companyBaseService.updateEntity(company);
+        req.setAttribute("companies",companyBaseService.readAll());
         req.getRequestDispatcher("/view/company/companies.jsp").forward(req,resp);
     }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String id = req.getParameter("id");
-        companyBaseService.deleteEntity(Company.class, Long.parseLong(id));
-        req.setAttribute("companies",companyBaseService.readAll(Company.class));
+        companyBaseService.deleteEntity(Long.parseLong(id));
+        req.setAttribute("companies",companyBaseService.readAll());
         req.getRequestDispatcher("/view/company/companies.jsp").forward(req,resp);
     }
 

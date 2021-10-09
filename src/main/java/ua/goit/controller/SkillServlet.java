@@ -20,7 +20,7 @@ public class SkillServlet extends HttpServlet {
     private final BaseService<Long, Skill> skillBaseService;
 
     public SkillServlet() {
-        skillBaseService = new SkillService();
+        skillBaseService = new SkillService(Skill.class);
     }
 
     @Override
@@ -29,7 +29,7 @@ public class SkillServlet extends HttpServlet {
         String pathInfo = req.getPathInfo();
         String[] split = pathInfo.split("/");
         if (pathInfo==null || "/".equals(pathInfo)) {
-            req.setAttribute("skills",skillBaseService.readAll(Skill.class));
+            req.setAttribute("skills",skillBaseService.readAll());
             req.getRequestDispatcher("/view/skill/skills.jsp").forward(req,resp);
         } else if (action.startsWith("/findSkillById")) {
             req.setAttribute("entity","skill");
@@ -39,11 +39,11 @@ public class SkillServlet extends HttpServlet {
             req.getRequestDispatcher("/view/findByName.jsp").forward(req,resp);
         } else if (action.startsWith("/find")) {
             if(req.getParameter("id")==null) {
-                List<Skill> skills = skillBaseService.findByName(Skill.class, req.getParameter("name"));
+                List<Skill> skills = skillBaseService.findByName(req.getParameter("name"));
                 req.setAttribute("skills",skills);
                 req.getRequestDispatcher("/view/skill/skills.jsp").forward(req,resp);
             } else {
-                Skill skill = skillBaseService.findById(Skill.class, Long.parseLong(req.getParameter("id"))).get();
+                Skill skill = skillBaseService.findById(Long.parseLong(req.getParameter("id"))).get();
                 req.setAttribute("skill", skill);
                 req.getRequestDispatcher("/view/skill/skillDetails.jsp").forward(req,resp);
             }
@@ -51,7 +51,7 @@ public class SkillServlet extends HttpServlet {
             req.setAttribute("mode", 0);
             req.getRequestDispatcher("/view/skill/saveSkill.jsp").forward(req,resp);
         } else if (action.startsWith("/updateSkill")) {
-            Skill skill = skillBaseService.findById(Skill.class, Long.parseLong(req.getParameter("id"))).get();
+            Skill skill = skillBaseService.findById(Long.parseLong(req.getParameter("id"))).get();
             req.setAttribute("skill", skill);
             req.setAttribute("mode", 1);
             req.getRequestDispatcher("/view/skill/saveSkill.jsp").forward(req,resp);
@@ -76,8 +76,8 @@ public class SkillServlet extends HttpServlet {
                     .name(req.getParameter("name"))
                     .skillLevel(req.getParameter("level"))
                     .build();
-            skillBaseService.createEntity(Skill.class, skill);
-            req.setAttribute("skills",skillBaseService.readAll(Skill.class));
+            skillBaseService.createEntity(skill);
+            req.setAttribute("skills",skillBaseService.readAll());
             req.getRequestDispatcher("/view/skill/skills.jsp").forward(req,resp);
         }
     }
@@ -89,16 +89,16 @@ public class SkillServlet extends HttpServlet {
                 .name(req.getParameter("name"))
                 .skillLevel(req.getParameter("level"))
                 .build();
-        skillBaseService.createEntity(Skill.class, skill);
-        req.setAttribute("skills",skillBaseService.readAll(Skill.class));
+        skillBaseService.createEntity(skill);
+        req.setAttribute("skills",skillBaseService.readAll());
         req.getRequestDispatcher("/view/skill/skills.jsp").forward(req,resp);
     }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String id = req.getParameter("id");
-        skillBaseService.deleteEntity(Skill.class, Long.parseLong(id));
-        req.setAttribute("skills",skillBaseService.readAll(Skill.class));
+        skillBaseService.deleteEntity(Long.parseLong(id));
+        req.setAttribute("skills",skillBaseService.readAll());
         req.getRequestDispatcher("/view/skill/skills.jsp").forward(req,resp);
     }
 
