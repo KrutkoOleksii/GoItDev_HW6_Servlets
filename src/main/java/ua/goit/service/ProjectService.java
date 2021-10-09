@@ -5,16 +5,18 @@ import ua.goit.repository.ProjectRepository;
 
 public class ProjectService extends BaseService<Long, Project>{
 
+    private final ProjectRepository projectRepository = new ProjectRepository(Project.class);
+
     public ProjectService(Class<Project> aClass) {
         super(aClass);
     }
 
     public String salaryOfProject(Long id) {
-        return new ProjectRepository(Project.class).salaryOfProject(id);
+        return projectRepository.salaryOfProject(id);
     }
 
     public String listOfProject() {
-        return new ProjectRepository(Project.class).listOfProjects();
+        return projectRepository.listOfProjects();
     }
 
 }
