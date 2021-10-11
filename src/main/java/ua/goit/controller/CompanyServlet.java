@@ -1,9 +1,9 @@
 package ua.goit.controller;
 
-import ua.goit.NoEntityException;
 import ua.goit.model.Company;
 import ua.goit.service.BaseService;
 import ua.goit.service.CompanyService;
+import ua.goit.util.NumericConverter;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -45,7 +45,7 @@ public class CompanyServlet extends HttpServlet {
                     req.getRequestDispatcher("/view/company/companies.jsp").forward(req, resp);
                 }
             } else {
-                Company company = companyBaseService.findById(Long.parseLong(req.getParameter("id"))).get();
+                Company company = companyBaseService.findById(NumericConverter.getLong(req.getParameter("id"))).get();
                 req.setAttribute("company", company);
                 req.getRequestDispatcher("/view/company/companyDetails.jsp").forward(req,resp);
             }
@@ -53,7 +53,7 @@ public class CompanyServlet extends HttpServlet {
             req.setAttribute("mode", 0);
             req.getRequestDispatcher("/view/company/saveCompany.jsp").forward(req,resp);
         } else if (action.startsWith("/updateCompany")) {
-            Company company = companyBaseService.findById(Long.parseLong(req.getParameter("id"))).get();
+            Company company = companyBaseService.findById(NumericConverter.getLong(req.getParameter("id"))).get();
             req.setAttribute("company", company);
             req.setAttribute("mode", 1);
             req.getRequestDispatcher("/view/company/saveCompany.jsp").forward(req,resp);
@@ -86,7 +86,7 @@ public class CompanyServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         Company company = Company.builder()
-                .id(Long.parseLong(req.getParameter("id")))
+                .id(NumericConverter.getLong(req.getParameter("id")))
                 .name(req.getParameter("name"))
                 .code(req.getParameter("code"))
                 .build();
@@ -98,7 +98,7 @@ public class CompanyServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String id = req.getParameter("id");
-        companyBaseService.deleteEntity(Long.parseLong(id));
+        companyBaseService.deleteEntity(NumericConverter.getLong(id));
         req.setAttribute("companies",companyBaseService.readAll());
         req.getRequestDispatcher("/view/company/companies.jsp").forward(req,resp);
     }

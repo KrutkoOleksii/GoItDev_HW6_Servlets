@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import ua.goit.model.Skill;
 import ua.goit.service.BaseService;
 import ua.goit.service.SkillService;
+import ua.goit.util.NumericConverter;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -50,7 +51,7 @@ public class SkillServlet extends HttpServlet {
                     req.getRequestDispatcher("/view/skill/skills.jsp").forward(req, resp);
                 }
             } else {
-                Optional<Skill> optional = skillBaseService.findById(getLong(req.getParameter("id")));
+                Optional<Skill> optional = skillBaseService.findById(NumericConverter.getLong(req.getParameter("id")));
                 if (optional.isPresent()) {
                     Skill skill = optional.get();
                     req.setAttribute("skill", skill);
@@ -65,7 +66,7 @@ public class SkillServlet extends HttpServlet {
             req.setAttribute("mode", 0);
             req.getRequestDispatcher("/view/skill/saveSkill.jsp").forward(req,resp);
         } else if (action.startsWith("/updateSkill")) {
-            Skill skill = skillBaseService.findById(Long.parseLong(req.getParameter("id"))).get();
+            Skill skill = skillBaseService.findById(NumericConverter.getLong(req.getParameter("id"))).get();
             req.setAttribute("skill", skill);
             req.setAttribute("mode", 1);
             req.getRequestDispatcher("/view/skill/saveSkill.jsp").forward(req,resp);
@@ -99,7 +100,7 @@ public class SkillServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         Skill skill = Skill.builder()
-                .id(Long.parseLong(req.getParameter("id")))
+                .id(NumericConverter.getLong(req.getParameter("id")))
                 .name(req.getParameter("name"))
                 .skillLevel(req.getParameter("level"))
                 .build();
@@ -111,7 +112,7 @@ public class SkillServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String id = req.getParameter("id");
-        skillBaseService.deleteEntity(Long.parseLong(id));
+        skillBaseService.deleteEntity(NumericConverter.getLong(id));
         req.setAttribute("skills",skillBaseService.readAll());
         req.getRequestDispatcher("/view/skill/skills.jsp").forward(req,resp);
     }
@@ -122,11 +123,4 @@ public class SkillServlet extends HttpServlet {
         return requestURI.substring(requestPathWithServletPath.length());
     }
 
-    private Long getLong(String string) {
-        try {
-            return Long.valueOf(string);
-        }catch (NumberFormatException e) {
-            return 0L;
-        }
-    }
 }

@@ -5,6 +5,7 @@ import ua.goit.model.Developer;
 import ua.goit.service.BaseService;
 import ua.goit.service.CompanyService;
 import ua.goit.service.DeveloperService;
+import ua.goit.util.NumericConverter;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -79,10 +80,10 @@ public class DeveloperServlet extends HttpServlet {
         if (action.startsWith("/create")) {
             Developer developer = Developer.builder()
                     .name(req.getParameter("name"))
-                    .age(Integer.parseInt(req.getParameter("age")))
+                    .age(NumericConverter.getInteger(req.getParameter("age")))
                     .gender(req.getParameter("gender"))
-                    .salary(Integer.parseInt(req.getParameter("salary")))
-                    .companyId(Long.parseLong(req.getParameter("companyId")))
+                    .salary(NumericConverter.getInteger(req.getParameter("salary")))
+                    .companyId(NumericConverter.getLong(req.getParameter("companyId")))
                     .build();
             developerBaseService.createEntity(developer);
             req.setAttribute("developers",developerBaseService.readAll());
@@ -93,12 +94,12 @@ public class DeveloperServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         Developer developer = Developer.builder()
-                .id(Long.parseLong(req.getParameter("id")))
+                .id(NumericConverter.getLong(req.getParameter("id")))
                 .name(req.getParameter("name"))
-                .age(Integer.parseInt(req.getParameter("age")))
+                .age(NumericConverter.getInteger(req.getParameter("age")))
                 .gender(req.getParameter("gender"))
-                .salary(Integer.parseInt(req.getParameter("salary")))
-                .companyId(Long.parseLong(req.getParameter("companyId")))
+                .salary(NumericConverter.getInteger(req.getParameter("salary")))
+                .companyId(NumericConverter.getLong(req.getParameter("companyId")))
                 .build();
         developerBaseService.createEntity(developer);
         req.setAttribute("developer", developer);
@@ -109,7 +110,7 @@ public class DeveloperServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String id = req.getParameter("id");
-        developerBaseService.deleteEntity(Long.parseLong(id));
+        developerBaseService.deleteEntity(NumericConverter.getLong(id));
         req.setAttribute("developers",developerBaseService.readAll());
         req.getRequestDispatcher("/view/developer/developers.jsp").forward(req,resp);
     }
