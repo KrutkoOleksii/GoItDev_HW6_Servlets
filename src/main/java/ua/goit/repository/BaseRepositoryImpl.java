@@ -2,6 +2,7 @@ package ua.goit.repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
+import ua.goit.NoEntityException;
 import ua.goit.model.BaseEntity;
 import ua.goit.util.DatabaseConnection;
 import ua.goit.util.PropertiesLoader;
@@ -132,7 +133,8 @@ public class BaseRepositoryImpl  <ID, E extends BaseEntity<ID>> implements Close
     @Override
     public E getOne(ID id) {
         return findById(id)
-                .orElseThrow(()-> new RuntimeException("Entity with id " + id + " not found"));
+                .orElseThrow(()-> new NoEntityException("Entity with id " + id + " not found"));
+        //throw new ExitException("Exit");
     }
 
     @SneakyThrows

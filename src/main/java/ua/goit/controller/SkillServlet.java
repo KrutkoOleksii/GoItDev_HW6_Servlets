@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @WebServlet("/skill/*")
 public class SkillServlet extends HttpServlet {
@@ -40,12 +41,25 @@ public class SkillServlet extends HttpServlet {
         } else if (action.startsWith("/find")) {
             if(req.getParameter("id")==null) {
                 List<Skill> skills = skillBaseService.findByName(req.getParameter("name"));
-                req.setAttribute("skills",skills);
-                req.getRequestDispatcher("/view/skill/skills.jsp").forward(req,resp);
+                if (skills.size() == 0) {
+                    req.setAttribute("entity","skill");
+                    req.setAttribute("message","No skills whit name: "+req.getParameter("name"));
+                    req.getRequestDispatcher("/view/notFound.jsp").forward(req,resp);
+                } else {
+                    req.setAttribute("skills", skills);
+                    req.getRequestDispatcher("/view/skill/skills.jsp").forward(req, resp);
+                }
             } else {
-                Skill skill = skillBaseService.findById(Long.parseLong(req.getParameter("id"))).get();
-                req.setAttribute("skill", skill);
-                req.getRequestDispatcher("/view/skill/skillDetails.jsp").forward(req,resp);
+                Optional<Skill> optional = skillBaseService.findById(getLong(req.getParameter("id")));
+                if (optional.isPresent()) {
+                    Skill skill = optional.get();
+                    req.setAttribute("skill", skill);
+                    req.getRequestDispatcher("/view/skill/skillDetails.jsp").forward(req,resp);
+                } else {
+                    req.setAttribute("entity","skill");
+                    req.setAttribute("message","No skills whit id: "+req.getParameter("id"));
+                    req.getRequestDispatcher("/view/notFound.jsp").forward(req,resp);
+                }
             }
         } else if (action.startsWith("/addSkill")) {
             req.setAttribute("mode", 0);
@@ -108,4 +122,11 @@ public class SkillServlet extends HttpServlet {
         return requestURI.substring(requestPathWithServletPath.length());
     }
 
+    private Long getLong(String string) {
+        try {
+            return Long.valueOf(string);
+        }catch (NumberFormatException e) {
+            return 0L;
+        }
+    }
 }

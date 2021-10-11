@@ -1,5 +1,6 @@
 package ua.goit.controller;
 
+import ua.goit.NoEntityException;
 import ua.goit.model.Company;
 import ua.goit.service.BaseService;
 import ua.goit.service.CompanyService;
@@ -35,8 +36,14 @@ public class CompanyServlet extends HttpServlet {
         } else if (action.startsWith("/find")) {
             if (req.getParameter("id")==null) {
                 List<Company> companies = companyBaseService.findByName(req.getParameter("name"));
-                req.setAttribute("companies",companies);
-                req.getRequestDispatcher("/view/company/companies.jsp").forward(req,resp);
+                if (companies.size() == 0) {
+                    req.setAttribute("entity","company");
+                    req.setAttribute("message","No companies whit name: "+req.getParameter("name"));
+                    req.getRequestDispatcher("/view/notFound.jsp").forward(req,resp);
+                } else {
+                    req.setAttribute("companies", companies);
+                    req.getRequestDispatcher("/view/company/companies.jsp").forward(req, resp);
+                }
             } else {
                 Company company = companyBaseService.findById(Long.parseLong(req.getParameter("id"))).get();
                 req.setAttribute("company", company);

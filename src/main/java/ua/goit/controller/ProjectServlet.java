@@ -43,8 +43,14 @@ public class ProjectServlet extends HttpServlet {
         } else if (action.startsWith("/find")) {
             if (req.getParameter("id")==null) {
                 List<Project> projects = projectBaseService.findByName(req.getParameter("name"));
-                req.setAttribute("projects",projects);
-                req.getRequestDispatcher("/view/project/projects.jsp").forward(req,resp);
+                if (projects.size() == 0) {
+                    req.setAttribute("entity","project");
+                    req.setAttribute("message","No projects whit name: "+req.getParameter("name"));
+                    req.getRequestDispatcher("/view/notFound.jsp").forward(req,resp);
+                } else {
+                    req.setAttribute("projects", projects);
+                    req.getRequestDispatcher("/view/project/projects.jsp").forward(req, resp);
+                }
             } else {
                 Project project = projectBaseService.findById(Long.parseLong(req.getParameter("id"))).get();
                 req.setAttribute("project", project);

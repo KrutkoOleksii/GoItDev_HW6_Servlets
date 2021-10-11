@@ -39,8 +39,14 @@ public class DeveloperServlet extends HttpServlet {
         } else if (action.startsWith("/find")) {
             if (req.getParameter("id")==null) {
                 List<Developer> developers = developerBaseService.findByName(req.getParameter("name"));
-                req.setAttribute("developers",developers);
-                req.getRequestDispatcher("/view/developer/developers.jsp").forward(req,resp);
+                if (developers.size() == 0) {
+                    req.setAttribute("entity","developer");
+                    req.setAttribute("message","No developers whit name: "+req.getParameter("name"));
+                    req.getRequestDispatcher("/view/notFound.jsp").forward(req,resp);
+                } else {
+                    req.setAttribute("developers",developers);
+                    req.getRequestDispatcher("/view/developer/developers.jsp").forward(req, resp);
+                }
             } else {
                 Developer developer = developerBaseService.findById(Long.parseLong(req.getParameter("id"))).get();
                 req.setAttribute("developer", developer);

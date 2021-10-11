@@ -35,8 +35,14 @@ public class CustomerServlet extends HttpServlet {
         } else if (action.startsWith("/find")) {
             if (req.getParameter("id")==null) {
                 List<Customer> customers = customerBaseService.findByName(req.getParameter("name"));
-                req.setAttribute("customers",customers);
-                req.getRequestDispatcher("/view/customer/customers.jsp").forward(req,resp);
+                if (customers.size() == 0) {
+                    req.setAttribute("entity","customer");
+                    req.setAttribute("message","No customers whit name: "+req.getParameter("name"));
+                    req.getRequestDispatcher("/view/notFound.jsp").forward(req,resp);
+                } else {
+                    req.setAttribute("customers", customers);
+                    req.getRequestDispatcher("/view/customer/customers.jsp").forward(req, resp);
+                }
             } else {
                 Customer customer = customerBaseService.findById(Long.parseLong(req.getParameter("id"))).get();
                 req.setAttribute("customer", customer);
