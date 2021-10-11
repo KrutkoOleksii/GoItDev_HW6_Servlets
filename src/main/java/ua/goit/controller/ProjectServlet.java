@@ -55,8 +55,8 @@ public class ProjectServlet extends HttpServlet {
             } else {
                 Project project = projectBaseService.findById(NumericConverter.getLong(req.getParameter("id"))).get();
                 req.setAttribute("project", project);
-                req.setAttribute("company", companyBaseService.findById(project.getCompanyId()));
-                req.setAttribute("customer", customerBaseService.findById(project.getCustomerId()));
+                req.setAttribute("company", companyBaseService.findById(project.getCompanyId()).get());
+                req.setAttribute("customer", customerBaseService.findById(project.getCustomerId()).get());
                 req.getRequestDispatcher("/view/project/projectDetails.jsp").forward(req,resp);
             }
         } else if (action.startsWith("/addProject")) {

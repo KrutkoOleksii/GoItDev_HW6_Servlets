@@ -76,6 +76,12 @@ public class DeveloperServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+        Long companyId = NumericConverter.getLong(req.getParameter("companyId"));
+        if (!companyBaseService.findById(companyId).isPresent()){
+            req.setAttribute("entity","company");
+            req.setAttribute("message","no company with id: " + companyId);
+            req.getRequestDispatcher("/view/notFound.jsp").forward(req,resp);
+        }
         String action = getAction(req);
         if (action.startsWith("/create")) {
             Developer developer = Developer.builder()
@@ -93,6 +99,12 @@ public class DeveloperServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+        Long companyId = NumericConverter.getLong(req.getParameter("companyId"));
+        if (!companyBaseService.findById(companyId).isPresent()){
+            req.setAttribute("entity","company");
+            req.setAttribute("message","no company with id: " + companyId);
+            req.getRequestDispatcher("/view/notFound.jsp").forward(req,resp);
+        }
         Developer developer = Developer.builder()
                 .id(NumericConverter.getLong(req.getParameter("id")))
                 .name(req.getParameter("name"))
