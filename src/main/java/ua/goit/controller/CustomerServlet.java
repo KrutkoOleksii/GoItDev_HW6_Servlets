@@ -45,7 +45,7 @@ public class CustomerServlet extends HttpServlet {
                     req.getRequestDispatcher("/view/customer/customers.jsp").forward(req, resp);
                 }
             } else {
-                Customer customer = customerBaseService.findById(Long.parseLong(req.getParameter("id"))).get();
+                Customer customer = customerBaseService.findById(NumericConverter.getLong(req.getParameter("id"))).get();
                 req.setAttribute("customer", customer);
                 req.getRequestDispatcher("/view/customer/customerDetails.jsp").forward(req,resp);
             }
@@ -53,7 +53,7 @@ public class CustomerServlet extends HttpServlet {
             req.setAttribute("mode", 0);
             req.getRequestDispatcher("/view/customer/saveCustomer.jsp").forward(req,resp);
         } else if (action.startsWith("/updateCustomer")) {
-            Customer customer = customerBaseService.findById(Long.parseLong(req.getParameter("id"))).get();
+            Customer customer = customerBaseService.findById(NumericConverter.getLong(req.getParameter("id"))).get();
             req.setAttribute("customer", customer);
             req.setAttribute("mode", 1);
             req.getRequestDispatcher("/view/customer/saveCustomer.jsp").forward(req,resp);

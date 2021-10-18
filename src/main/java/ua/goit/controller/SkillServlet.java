@@ -79,7 +79,6 @@ public class SkillServlet extends HttpServlet {
             doDelete(req,resp);
         } else if (split.length!=2){
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
-            return;
         }
     }
 

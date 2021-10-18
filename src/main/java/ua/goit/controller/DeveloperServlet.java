@@ -49,7 +49,7 @@ public class DeveloperServlet extends HttpServlet {
                     req.getRequestDispatcher("/view/developer/developers.jsp").forward(req, resp);
                 }
             } else {
-                Developer developer = developerBaseService.findById(Long.parseLong(req.getParameter("id"))).get();
+                Developer developer = developerBaseService.findById(NumericConverter.getLong(req.getParameter("id"))).get();
                 req.setAttribute("developer", developer);
                 req.setAttribute("company", companyBaseService.findById(developer.getCompanyId()).get());
                 req.getRequestDispatcher("/view/developer/developerDetails.jsp").forward(req,resp);
@@ -58,7 +58,7 @@ public class DeveloperServlet extends HttpServlet {
             req.setAttribute("mode", 0);
             req.getRequestDispatcher("/view/developer/saveDeveloper.jsp").forward(req,resp);
         } else if (action.startsWith("/updateDeveloper")) {
-            Developer developer = developerBaseService.findById(Long.parseLong(req.getParameter("id"))).get();
+            Developer developer = developerBaseService.findById(NumericConverter.getLong(req.getParameter("id"))).get();
             req.setAttribute("developer", developer);
             req.setAttribute("mode", 1);
             req.getRequestDispatcher("/view/developer/saveDeveloper.jsp").forward(req,resp);
@@ -89,7 +89,7 @@ public class DeveloperServlet extends HttpServlet {
                     .age(NumericConverter.getInteger(req.getParameter("age")))
                     .gender(req.getParameter("gender"))
                     .salary(NumericConverter.getInteger(req.getParameter("salary")))
-                    .companyId(NumericConverter.getLong(req.getParameter("companyId")))
+                    .companyId(companyId)
                     .build();
             developerBaseService.createEntity(developer);
             req.setAttribute("developers",developerBaseService.readAll());
@@ -111,7 +111,7 @@ public class DeveloperServlet extends HttpServlet {
                 .age(NumericConverter.getInteger(req.getParameter("age")))
                 .gender(req.getParameter("gender"))
                 .salary(NumericConverter.getInteger(req.getParameter("salary")))
-                .companyId(NumericConverter.getLong(req.getParameter("companyId")))
+                .companyId(companyId)
                 .build();
         developerBaseService.createEntity(developer);
         req.setAttribute("developer", developer);
